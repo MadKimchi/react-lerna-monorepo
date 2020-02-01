@@ -1,0 +1,9 @@
+{
+  "name": "app-sample",
+  "version": "1.0.0",
+  "description": "sample application using monorepo strategy",
+  "main": "index.js",
+  "repository": "github.com/madkimchi/react-lerna-monorepo",
+  "author": "madkimchi",
+  "license": "MIT"
+}

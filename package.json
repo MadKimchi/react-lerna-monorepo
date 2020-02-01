@@ -6,7 +6,11 @@
   "repository": "github.com/madkimchi/react-lerna-monorepo",
   "author": "madkimchi",
   "license": "MIT",
+  "private": true,
   "devDependencies": {
     "lerna": "^3.20.2"
-  }
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }
