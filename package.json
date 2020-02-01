@@ -1,0 +1,12 @@
+{
+  "name": "madkimchi",
+  "version": "1.0.0",
+  "description": "sample project to demonstrate the benefits of monorepo for react projects",
+  "main": "index.js",
+  "repository": "github.com/madkimchi/react-lerna-monorepo",
+  "author": "madkimchi",
+  "license": "MIT",
+  "devDependencies": {
+    "lerna": "^3.20.2"
+  }
+}
