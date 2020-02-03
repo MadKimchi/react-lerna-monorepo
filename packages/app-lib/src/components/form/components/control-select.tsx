@@ -1,1 +1,1 @@
-export const LibSelectControl = () => {};
+export const ControlSelect = () => {};
