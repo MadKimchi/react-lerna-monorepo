@@ -3,6 +3,6 @@ export function StringValidator(
   maxLength?: number
 ): Function {
   return (value: string): boolean => {
-    return !!value && value.length > minLength;
+    return !!value && value.length < minLength;
   };
 }

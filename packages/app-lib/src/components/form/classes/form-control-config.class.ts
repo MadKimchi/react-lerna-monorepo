@@ -1,5 +1,6 @@
 import { ControlTypeEnum } from '../enums/control-type.enum';
 import { Subject } from 'rxjs';
+import { LibFormBuilder } from './form-builder.class';
 
 export class LibFormControlConfig {
   public hasError: boolean = false;
@@ -8,6 +9,7 @@ export class LibFormControlConfig {
   public value: string = '';
   public subject: Subject<any> = new Subject<any>();
   public validators: Function[] = [];
+  public formBuilder!: LibFormBuilder; // prettier-ignore
 
   constructor(public key: string, public type: ControlTypeEnum) {
     this.setError = this.setError.bind(this);

@@ -2,94 +2,45 @@ import React from 'react';
 import './App.css';
 import { LibFormControl } from './components/form';
 import { LibFormControlConfig } from './components/form/classes/form-control-config.class';
+import { ButtonSubmit } from './components/form/components/button-submit';
 import { ControlTypeEnum } from './components/form/enums';
 import { StringValidator } from './components/form/validators';
+import { RequiredValidator } from './components/form/validators/required.validator';
+import { LibFormBuilder } from './components/form/classes/form-builder.class';
 
 const App = () => {
-  // const formBuilder = new FormBuilder();
-  const inputControl = new LibFormControlConfig(
-    'inputControl',
-    ControlTypeEnum.input
+  const formBuilder = new LibFormBuilder();
+  formBuilder.addControl(buildInputControl('1'));
+  formBuilder.addControl(buildInputControl('2'));
+  formBuilder.addControl(buildInputControl('3'));
+  formBuilder.addControl(buildInputControl('4'));
+  formBuilder.addControl(buildInputControl('5'));
+  formBuilder.addControl(buildInputControl('6'));
+  formBuilder.addControl(buildInputControl('7'));
+  formBuilder.addControl(buildInputControl('8'));
+  formBuilder.addControl(buildInputControl('9'));
+  formBuilder.addControl(buildInputControl('10'));
+  formBuilder.addControl(buildInputControl('11'));
+  formBuilder.addControl(buildInputControl('12'));
+
+  const form = Object.values(formBuilder.controls).map(
+    (control: LibFormControlConfig) => control
   );
 
-  inputControl.label = 'some label';
-  inputControl.validators = [StringValidator(3)];
-
-  const form = [
-    buildInputControl1(),
-    buildInputControl2(),
-    buildInputControl3(),
-    buildInputControl4(),
-    buildInputControl5(),
-    buildInputControl6()
-  ];
-
-  function buildInputControl1(): LibFormControlConfig {
-    const inputControl = new LibFormControlConfig(
-      'inputControl1',
-      ControlTypeEnum.input
-    );
-
-    inputControl.label = 'some label 1';
-    inputControl.validators = [StringValidator(3)];
-    return inputControl;
-  }
-  function buildInputControl2(): LibFormControlConfig {
-    const inputControl = new LibFormControlConfig(
-      'inputControl2',
-      ControlTypeEnum.input
-    );
-
-    inputControl.label = 'some label 2';
+  function buildInputControl(key: string): LibFormControlConfig {
+    const inputControl = new LibFormControlConfig(key, ControlTypeEnum.input);
+    inputControl.formBuilder = formBuilder;
+    inputControl.label = `some label ${key}`;
     inputControl.validators = [StringValidator(3)];
     return inputControl;
   }
 
-  function buildInputControl3(): LibFormControlConfig {
-    const inputControl = new LibFormControlConfig(
-      'inputControl3',
-      ControlTypeEnum.input
-    );
-
-    inputControl.label = 'some label 3';
-    inputControl.validators = [StringValidator(3)];
-    return inputControl;
-  }
-  function buildInputControl4(): LibFormControlConfig {
-    const inputControl = new LibFormControlConfig(
-      'inputControl4',
-      ControlTypeEnum.input
-    );
-
-    inputControl.label = 'some label 4';
-    inputControl.validators = [StringValidator(3)];
-    return inputControl;
-  }
-  function buildInputControl5(): LibFormControlConfig {
-    const inputControl = new LibFormControlConfig(
-      'inputControl5',
-      ControlTypeEnum.input
-    );
-
-    inputControl.label = 'some label 5';
-    inputControl.validators = [StringValidator(3)];
-    return inputControl;
-  }
-  function buildInputControl6(): LibFormControlConfig {
-    const inputControl = new LibFormControlConfig(
-      'inputControl6',
-      ControlTypeEnum.input
-    );
-
-    inputControl.label = 'some label 6';
-    inputControl.validators = [StringValidator(3)];
-    return inputControl;
-  }
   return (
     <div className="App">
       {form.map((config: LibFormControlConfig) => (
         <LibFormControl key={config.key} config={config} />
       ))}
+      <ButtonSubmit builder={formBuilder} />
     </div>
   );
 };

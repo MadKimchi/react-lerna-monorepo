@@ -1,10 +1,17 @@
 .App {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
 }
 
 .App-logo {
   height: 40vmin;
   pointer-events: none;
+}
+
+.MuiFormControl-root {
+  margin-bottom: 10px !important;
 }
 
 @media (prefers-reduced-motion: no-preference) {
