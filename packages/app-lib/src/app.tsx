@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import './App.css';
+import './app.css';
 
 import {
   RxFormGroupRef,
