@@ -5,6 +5,8 @@ import { RxFormGroupRef } from './form-group.class';
 export class RxFormControlRef {
   public hasError: boolean = false;
   public isDirty: boolean = false;
+  public isTouched: boolean = false;
+
   public label: string = '';
   public value: string = '';
   public subject: Subject<any> = new Subject<any>();
@@ -13,6 +15,10 @@ export class RxFormControlRef {
 
   constructor(public key: string, public type: ControlTypeEnum) {
     this.setError = this.setError.bind(this);
+  }
+
+  public get valid(): boolean {
+    return !this.invalid;
   }
 
   public get invalid(): boolean {

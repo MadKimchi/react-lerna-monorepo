@@ -7,7 +7,8 @@ import {
   RxFormControl,
   RxButtonSubmit,
   ControlTypeEnum,
-  StringValidator
+  StringValidator,
+  ValidationTriggerEnum
 } from './components';
 
 const App = () => {

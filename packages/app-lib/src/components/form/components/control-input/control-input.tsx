@@ -5,36 +5,70 @@ import React, {
   ChangeEvent
 } from 'react';
 
-import FilledInput from '@material-ui/core/FilledInput';
+import { of, empty } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+
+import FilledInput, { FilledInputProps } from '@material-ui/core/FilledInput';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 
 import { IFormControlProps } from '../../interfaces';
+import { ValidationTriggerEnum } from '../../enums';
 
 export const ControlInput: FunctionComponent<IFormControlProps> = ({
   controlRef
 }): ReactElement => {
   const [error, setError] = useState(false);
-  const errorOnBlur = true;
-  const onChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    controlRef.value = event.target.value;
+  const trigger = controlRef.formGroupRef.validationTrigger;
 
-    if (error !== controlRef.invalid && !errorOnBlur) {
-      setError(controlRef.invalid);
+  const props: FilledInputProps = {};
+  props.id = controlRef.key;
+
+  // callbacks
+  props.onClick = () => {
+    if (!controlRef.isTouched) {
+      controlRef.isTouched = true;
+    }
+  };
+
+  props.onChange = (event: ChangeEvent<HTMLInputElement>) => {
+    controlRef.value = event.target.value;
+    if (!controlRef.isDirty) {
+      controlRef.isDirty = true;
     }
 
-    controlRef.formGroupRef.onDebounce.next(true);
+    // const errorOnBlur = trigger === ValidationTriggerEnum.onBlur;
+    // if (error !== controlRef.invalid && !errorOnBlur) {
+    //   setError(controlRef.invalid);
+    // }
+
+    if (
+      error !== controlRef.invalid &&
+      trigger === ValidationTriggerEnum.onSync
+    ) {
+      of({})
+        .pipe(debounceTime(10000))
+        .subscribe(() => {
+          setError(controlRef.invalid);
+        });
+    }
+
+    controlRef.formGroupRef.onDebounce.next();
   };
 
-  const onBlur = (): void => {
-    setError(controlRef.invalid);
-  };
+  if (
+    controlRef.formGroupRef.validationTrigger === ValidationTriggerEnum.onBlur
+  ) {
+    props.onBlur = (): void => {
+      setError(controlRef.invalid);
+    };
+  }
 
   return (
     <FormControl variant="filled" error={error}>
       <InputLabel htmlFor="field-email">{controlRef.label}</InputLabel>
-      <FilledInput id={controlRef.key} onBlur={onBlur} onChange={onChange} />
+      <FilledInput {...props} />
       {error && (
         <FormHelperText id="my-helper-text">
           We'll never share your email.
