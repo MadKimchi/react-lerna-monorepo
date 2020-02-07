@@ -6,6 +6,7 @@ export class RxFormGroupRef {
   public controls: { [key: string]: RxFormControlRef } = {};
   public debounceTimer: number = 1000;
   public onDebounce: Subject<boolean> = new Subject<boolean>();
+  public onSubmit: Subject<any> = new Subject<any>();
   public validationTrigger: ValidationTriggerEnum = ValidationTriggerEnum.onSync;
 
   public get invalid(): boolean {
@@ -23,4 +24,6 @@ export class RxFormGroupRef {
   public getControl(key: string): RxFormControlRef {
     return this.controls[key];
   }
+
+  public validate(): void {}
 }

@@ -10,7 +10,7 @@ import { RxFormControlRef } from '../../classes';
 import { IFormGroupProps } from '../../interfaces/group.interface';
 import { ValidationTriggerEnum } from '../../enums';
 
-export const RxButtonSubmit: FunctionComponent<IFormGroupProps> = ({
+export const RxButtonClear: FunctionComponent<IFormGroupProps> = ({
   formGroupRef
 }): ReactElement => {
   const initialValidty =

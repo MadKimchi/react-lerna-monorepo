@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useEffect } from 'react';
 import './app.css';
 
 import {
@@ -13,6 +13,7 @@ import {
 
 const App = () => {
   const formGroup = new RxFormGroupRef();
+  formGroup.validationTrigger = ValidationTriggerEnum.onAsync;
   buildInputControl('1', formGroup);
   buildInputControl('2', formGroup);
   buildInputControl('3', formGroup);
@@ -42,6 +43,16 @@ const App = () => {
       <RxFormControl key={controlRef.key} controlRef={controlRef} />
     ));
   }
+
+  useEffect(
+    () => {
+      const subscription = formGroup.onSubmit.subscribe(() => {
+        console.log('....');
+      });
+      return () => subscription.unsubscribe();
+    },
+    [formGroup.onSubmit]
+  );
 
   return (
     <div className="App">

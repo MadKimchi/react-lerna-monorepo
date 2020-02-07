@@ -2,6 +2,7 @@ import React, {
   FunctionComponent,
   ReactElement,
   useState,
+  useEffect,
   ChangeEvent
 } from 'react';
 
@@ -34,18 +35,15 @@ export const ControlInput: FunctionComponent<IFormControlProps> = ({
 
   props.onChange = (event: ChangeEvent<HTMLInputElement>) => {
     controlRef.value = event.target.value;
+
+    // possibly move this logic to class setter
     if (!controlRef.isDirty) {
       controlRef.isDirty = true;
     }
 
-    // const errorOnBlur = trigger === ValidationTriggerEnum.onBlur;
-    // if (error !== controlRef.invalid && !errorOnBlur) {
-    //   setError(controlRef.invalid);
-    // }
-
     if (
       error !== controlRef.invalid &&
-      trigger === ValidationTriggerEnum.onSync
+      trigger !== ValidationTriggerEnum.onBlur
     ) {
       of({})
         .pipe(debounceTime(10000))
@@ -64,6 +62,26 @@ export const ControlInput: FunctionComponent<IFormControlProps> = ({
       setError(controlRef.invalid);
     };
   }
+
+  useEffect(
+    () => {
+      if (
+        controlRef.formGroupRef.validationTrigger ===
+        ValidationTriggerEnum.onAsync
+      ) {
+        const subscription = controlRef.formGroupRef.onSubmit.subscribe(() => {
+          setError(controlRef.invalid);
+        });
+
+        return () => subscription.unsubscribe();
+      }
+    },
+    [
+      controlRef.formGroupRef.validationTrigger,
+      controlRef.invalid,
+      controlRef.formGroupRef.onSubmit
+    ]
+  );
 
   return (
     <FormControl variant="filled" error={error}>
