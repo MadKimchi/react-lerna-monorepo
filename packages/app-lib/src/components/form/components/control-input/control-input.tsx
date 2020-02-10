@@ -7,8 +7,7 @@ import React, {
   useRef
 } from 'react';
 
-import { of } from 'rxjs';
-import { debounceTime, takeUntil, takeWhile } from 'rxjs/operators';
+import { takeUntil, takeWhile } from 'rxjs/operators';
 
 import FilledInput, { FilledInputProps } from '@material-ui/core/FilledInput';
 import FormControl from '@material-ui/core/FormControl';
@@ -67,17 +66,17 @@ export const ControlInput: FunctionComponent<IFormControlProps> = ({
 
   useEffect(
     () => {
-      const subscription = controlRef.formGroupRef.onSubmit
+      controlRef.formGroupRef.onSubmit
         .pipe(
           takeWhile(() => trigger === ValidationTriggerEnum.onAsync),
-          takeUntil(controlRef.unsubscribe)
+          takeUntil(controlRef.formGroupRef.unsubscribe)
         )
         .subscribe(() => {
           setError(controlRef.invalid);
         });
 
-      const cancelSubscription = controlRef.formGroupRef.onClear
-        .pipe(takeUntil(controlRef.unsubscribe))
+      controlRef.formGroupRef.onClear
+        .pipe(takeUntil(controlRef.formGroupRef.unsubscribe))
         .subscribe(() => {
           (ref.current as any).value = '';
           setError(false);
@@ -85,14 +84,16 @@ export const ControlInput: FunctionComponent<IFormControlProps> = ({
         });
 
       return () => {
-        controlRef.unsubscribe.next();
-        controlRef.unsubscribe.complete();
+        // controlRef.formGroupRef.unsubscribe.next();
+        // controlRef.formGroupRef.unsubscribe.complete();
       };
     },
     [
-      controlRef.formGroupRef.validationTrigger,
+      trigger,
       controlRef.invalid,
-      controlRef.formGroupRef.onSubmit
+      controlRef.formGroupRef.onSubmit,
+      controlRef.formGroupRef.onClear,
+      controlRef.formGroupRef.unsubscribe
     ]
   );
 
