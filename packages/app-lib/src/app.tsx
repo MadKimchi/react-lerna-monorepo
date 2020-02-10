@@ -1,4 +1,5 @@
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement, useEffect } from 'react';
+import { takeUntil } from 'rxjs/operators';
 import './app.css';
 
 import {
@@ -14,8 +15,7 @@ import {
 
 const App = () => {
   const formGroup = new RxFormGroupRef();
-  const [refresh, shouldRefresh] = useState(false);
-  formGroup.validationTrigger = ValidationTriggerEnum.onAsync;
+  formGroup.validationTrigger = ValidationTriggerEnum.onBlur;
   buildInputControl('1', formGroup);
   buildInputControl('2', formGroup);
   buildInputControl('3', formGroup);
@@ -42,26 +42,25 @@ const App = () => {
 
   function renderControls(): ReactElement[] {
     return form.map((controlRef: RxFormControlRef) => (
-      <RxFormControl
-        key={controlRef.key}
-        controlRef={controlRef}
-        refresh={refresh}
-      />
+      <RxFormControl key={controlRef.key} controlRef={controlRef} />
     ));
   }
 
   useEffect(
     () => {
-      const subscription = formGroup.onSubmit.subscribe(() => {
-        console.log('....');
-      });
-      const cancelSubscription = formGroup.onClear.subscribe(() => {
-        // console.log('....??', formGroup.controls);
-        // shouldRefresh(true);
-      });
+      formGroup.onSubmit
+        .pipe(takeUntil(formGroup.unsubscribe))
+        .subscribe(() => {
+          Object.values(formGroup.controls).forEach(
+            (control: RxFormControlRef) => {
+              console.log(control);
+            }
+          );
+        });
+
       return () => {
-        subscription.unsubscribe();
-        cancelSubscription.unsubscribe();
+        formGroup.unsubscribe.next();
+        formGroup.unsubscribe.complete();
       };
     },
     [formGroup.onSubmit]

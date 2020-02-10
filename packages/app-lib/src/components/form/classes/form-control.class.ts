@@ -13,7 +13,7 @@ export class RxFormControlRef {
   public formGroupRef!: RxFormGroupRef; // prettier-ignore
 
   public subject: Subject<any> = new Subject<any>();
-  public unsubscribe: Subject<any> = new Subject<void>();
+  // public unsubscribe: Subject<any> = new Subject<void>();
 
   constructor(public key: string, public type: ControlTypeEnum) {
     this.setError = this.setError.bind(this);
