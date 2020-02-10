@@ -13,32 +13,9 @@ import { ValidationTriggerEnum } from '../../enums';
 export const RxButtonClear: FunctionComponent<IFormGroupProps> = ({
   formGroupRef
 }): ReactElement => {
-  const initialValidty =
-    formGroupRef.validationTrigger !== ValidationTriggerEnum.onAsync;
-  const [invalid, setInvalid] = useState(initialValidty);
-  useEffect(
-    () => {
-      const subscription = formGroupRef.onDebounce
-        .pipe(
-          filter(
-            () =>
-              formGroupRef.validationTrigger !== ValidationTriggerEnum.onAsync
-          ),
-          debounceTime(formGroupRef.debounceTimer)
-        )
-        .subscribe(() => setInvalid(formGroupRef.invalid));
-      return () => subscription.unsubscribe();
-    },
-    [formGroupRef.onDebounce, formGroupRef.controls, formGroupRef.invalid]
-  );
-
   function onClick(): void {
-    formGroupRef.onSubmit.next();
+    formGroupRef.onClear.next();
   }
 
-  return (
-    <button disabled={invalid} onClick={onClick}>
-      submit
-    </button>
-  );
+  return <button onClick={onClick}>clear</button>;
 };

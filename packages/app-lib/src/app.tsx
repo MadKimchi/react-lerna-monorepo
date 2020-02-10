@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import './app.css';
 
 import {
@@ -6,6 +6,7 @@ import {
   RxFormControlRef,
   RxFormControl,
   RxButtonSubmit,
+  RxButtonClear,
   ControlTypeEnum,
   StringValidator,
   ValidationTriggerEnum
@@ -13,6 +14,7 @@ import {
 
 const App = () => {
   const formGroup = new RxFormGroupRef();
+  const [refresh, shouldRefresh] = useState(false);
   formGroup.validationTrigger = ValidationTriggerEnum.onAsync;
   buildInputControl('1', formGroup);
   buildInputControl('2', formGroup);
@@ -40,7 +42,11 @@ const App = () => {
 
   function renderControls(): ReactElement[] {
     return form.map((controlRef: RxFormControlRef) => (
-      <RxFormControl key={controlRef.key} controlRef={controlRef} />
+      <RxFormControl
+        key={controlRef.key}
+        controlRef={controlRef}
+        refresh={refresh}
+      />
     ));
   }
 
@@ -49,7 +55,14 @@ const App = () => {
       const subscription = formGroup.onSubmit.subscribe(() => {
         console.log('....');
       });
-      return () => subscription.unsubscribe();
+      const cancelSubscription = formGroup.onClear.subscribe(() => {
+        // console.log('....??', formGroup.controls);
+        // shouldRefresh(true);
+      });
+      return () => {
+        subscription.unsubscribe();
+        cancelSubscription.unsubscribe();
+      };
     },
     [formGroup.onSubmit]
   );
@@ -58,6 +71,7 @@ const App = () => {
     <div className="App">
       {renderControls()}
       <RxButtonSubmit formGroupRef={formGroup} />
+      <RxButtonClear formGroupRef={formGroup} />
     </div>
   );
 };

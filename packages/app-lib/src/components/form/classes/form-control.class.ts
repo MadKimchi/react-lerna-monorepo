@@ -9,9 +9,11 @@ export class RxFormControlRef {
 
   public label: string = '';
   public value: string = '';
-  public subject: Subject<any> = new Subject<any>();
   public validators: Function[] = [];
   public formGroupRef!: RxFormGroupRef; // prettier-ignore
+
+  public subject: Subject<any> = new Subject<any>();
+  public unsubscribe: Subject<any> = new Subject<void>();
 
   constructor(public key: string, public type: ControlTypeEnum) {
     this.setError = this.setError.bind(this);
@@ -28,6 +30,13 @@ export class RxFormControlRef {
 
     this.hasError = this.validators.reduce(this.setError, true);
     return this.hasError;
+  }
+
+  public clear(): void {
+    this.hasError = false;
+    this.isDirty = false;
+    this.isTouched = false;
+    this.value = '';
   }
 
   private setError(hasError: boolean, validator: Function): boolean {

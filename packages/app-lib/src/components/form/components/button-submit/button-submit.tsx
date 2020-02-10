@@ -4,7 +4,7 @@ import React, {
   useState,
   useEffect
 } from 'react';
-import { debounceTime, filter } from 'rxjs/operators';
+import { debounceTime, takeWhile } from 'rxjs/operators';
 
 import { RxFormControlRef } from '../../classes';
 import { IFormGroupProps } from '../../interfaces/group.interface';
@@ -20,13 +20,15 @@ export const RxButtonSubmit: FunctionComponent<IFormGroupProps> = ({
     () => {
       const subscription = formGroupRef.onDebounce
         .pipe(
-          filter(
+          takeWhile(
             () =>
               formGroupRef.validationTrigger !== ValidationTriggerEnum.onAsync
           ),
           debounceTime(formGroupRef.debounceTimer)
         )
-        .subscribe(() => setInvalid(formGroupRef.invalid));
+        .subscribe(() => {
+          setInvalid(formGroupRef.invalid);
+        });
       return () => subscription.unsubscribe();
     },
     [formGroupRef.onDebounce, formGroupRef.controls, formGroupRef.invalid]

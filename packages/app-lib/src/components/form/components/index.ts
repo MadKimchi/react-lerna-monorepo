@@ -1,4 +1,5 @@
 export * from './button-submit/button-submit';
+export * from './button-clear/button-clear';
 export * from './control-input/control-input';
 // export * from './control-select/control-select.interface';
 export * from './control-select/control-select';

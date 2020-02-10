@@ -7,12 +7,12 @@ export class RxFormGroupRef {
   public debounceTimer: number = 1000;
   public onDebounce: Subject<boolean> = new Subject<boolean>();
   public onSubmit: Subject<any> = new Subject<any>();
+  public onClear: Subject<any> = new Subject<any>();
   public validationTrigger: ValidationTriggerEnum = ValidationTriggerEnum.onSync;
 
   public get invalid(): boolean {
-    return Object.values(this.controls).reduce(
-      (invalid: boolean, control: RxFormControlRef) => control.invalid,
-      true
+    return Object.values(this.controls).some(
+      (control: RxFormControlRef) => control.invalid
     );
   }
 
@@ -23,6 +23,12 @@ export class RxFormGroupRef {
 
   public getControl(key: string): RxFormControlRef {
     return this.controls[key];
+  }
+
+  public clear(): void {
+    Object.values(this.controls).forEach((control: RxFormControlRef) => {
+      control.clear();
+    });
   }
 
   public validate(): void {}
