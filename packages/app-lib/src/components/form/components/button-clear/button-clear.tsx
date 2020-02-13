@@ -9,5 +9,9 @@ export const RxButtonClear: FunctionComponent<IFormGroupProps> = ({
     formGroupRef.onClear.next();
   }
 
-  return <button onClick={onClick}>clear</button>;
+  return (
+    <button type="button" onClick={onClick}>
+      clear
+    </button>
+  );
 };

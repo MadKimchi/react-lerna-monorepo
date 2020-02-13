@@ -14,8 +14,8 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 
-import { IFormControlProps } from '../../interfaces';
-import { ValidationTriggerEnum } from '../../enums';
+import { IFormControlProps } from '../../../interfaces';
+import { ValidationTriggerEnum } from '../../../enums';
 
 export const ControlInput: FunctionComponent<IFormControlProps> = ({
   controlRef
