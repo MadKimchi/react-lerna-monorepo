@@ -46,7 +46,7 @@ export const RxButtonSubmit: FunctionComponent<IFormGroupProps> = ({
   }
 
   return (
-    <button disabled={invalid} onClick={onClick}>
+    <button type="button" disabled={invalid} onClick={onClick}>
       submit
     </button>
   );

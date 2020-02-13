@@ -1,1 +1,1 @@
-export const LibForm = () => {};
+export const RxForm = () => {};

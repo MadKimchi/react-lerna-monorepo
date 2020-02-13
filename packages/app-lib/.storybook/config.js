@@ -1,8 +1,6 @@
 import { addParameters, configure } from '@storybook/react';
 import { DocsPage, DocsContainer } from '@storybook/addon-docs/blocks';
 
-// const req = require.context('../docs', true, /\.stories\.(ts|tsx)$/);
-
 const req = require.context('../src', true, /\.story\.(ts|tsx)$/);
 
 addParameters({
