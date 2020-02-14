@@ -9,6 +9,27 @@ import {
 import { RxFormGroupRef, RxFormControlRef } from '../classes';
 import { ValidationTriggerEnum, ControlTypeEnum } from '../enums';
 import { StringValidator } from '../validators';
+import { makeStyles } from '@material-ui/core';
+
+const useStyles = makeStyles({
+  column: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  row: {
+    display: 'flex',
+    flexDirection: 'row'
+  },
+  buttonWrapper: {
+    justifyContent: 'flex-end'
+  },
+  button: {
+    marginLeft: '5px'
+  },
+  control: {
+    paddingBottom: '10px'
+  }
+});
 
 export default {
   title: 'Components/RxFormControl/Input',
@@ -33,6 +54,7 @@ validateOnBlur.story = {
 };
 
 export const withFormGroup = () => {
+  const classes = useStyles();
   const formGroup = new RxFormGroupRef();
   formGroup.validationTrigger = ValidationTriggerEnum.onBlur;
 
@@ -66,20 +88,30 @@ export const withFormGroup = () => {
 
   function renderControls(): ReactElement[] {
     return form.map((controlRef: RxFormControlRef) => (
-      <RxFormControl key={controlRef.key} controlRef={controlRef} />
+      <div
+        className={`${classes.control} ${classes.column}`}
+        key={controlRef.key}
+      >
+        <RxFormControl controlRef={controlRef} />
+      </div>
     ));
   }
 
   return (
-    <form className="example-input-with-form">
-      {renderControls()}
-      <RxButtonSubmit formGroupRef={formGroup} />
-      <RxButtonClear formGroupRef={formGroup} />
-    </form>
+    <div className={classes.column}>
+      <form className={classes.column}>
+        {renderControls()}
+        <div className={`${classes.row} ${classes.buttonWrapper}`}>
+          <RxButtonClear formGroupRef={formGroup} />
+          <RxButtonSubmit formGroupRef={formGroup} />
+        </div>
+      </form>
+    </div>
   );
 };
 
 export const onDebounce5000MS = () => {
+  const classes = useStyles();
   const [valueJSON, setValueJSON] = useState('');
 
   const formGroup = new RxFormGroupRef();
@@ -109,7 +141,12 @@ export const onDebounce5000MS = () => {
 
   function renderControls(): ReactElement[] {
     return form.map((controlRef: RxFormControlRef) => (
-      <RxFormControl key={controlRef.key} controlRef={controlRef} />
+      <div
+        className={`${classes.control} ${classes.column}`}
+        key={controlRef.key}
+      >
+        <RxFormControl controlRef={controlRef} />
+      </div>
     ));
   }
 
@@ -135,9 +172,11 @@ export const onDebounce5000MS = () => {
   );
 
   return (
-    <form className="example-input-with-form">
-      {renderControls()}
-      <pre>{valueJSON}</pre>
-    </form>
+    <div className={classes.column}>
+      <form className={classes.column}>
+        {renderControls()}
+        <pre>{valueJSON}</pre>
+      </form>
+    </div>
   );
 };

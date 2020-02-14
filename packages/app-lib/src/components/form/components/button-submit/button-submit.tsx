@@ -5,6 +5,7 @@ import React, {
   useEffect
 } from 'react';
 import { debounceTime, takeWhile, takeUntil } from 'rxjs/operators';
+import Button from '@material-ui/core/Button';
 
 import { IFormGroupProps } from '../../interfaces/group.interface';
 import { ValidationTriggerEnum } from '../../enums';
@@ -48,8 +49,18 @@ export const RxButtonSubmit: FunctionComponent<IFormGroupProps> = ({
   }
 
   return (
-    <button type="button" disabled={invalid} onClick={onClick}>
-      submit
-    </button>
+    <Button
+      type="button"
+      variant="contained"
+      color="primary"
+      disabled={invalid}
+      onClick={onClick}
+    >
+      Submit
+    </Button>
   );
 };
+
+{
+  /* <Button>Default</Button>; */
+}

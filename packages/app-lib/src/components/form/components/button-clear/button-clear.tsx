@@ -1,4 +1,5 @@
 import React, { FunctionComponent, ReactElement } from 'react';
+import Button from '@material-ui/core/Button';
 
 import { IFormGroupProps } from '../../interfaces/group.interface';
 
@@ -10,8 +11,8 @@ export const RxButtonClear: FunctionComponent<IFormGroupProps> = ({
   }
 
   return (
-    <button type="button" onClick={onClick}>
-      clear
-    </button>
+    <Button type="button" onClick={onClick}>
+      Clear
+    </Button>
   );
 };
