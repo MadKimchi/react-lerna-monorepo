@@ -7,10 +7,12 @@ export class RxFormGroupRef {
   public validationTrigger: ValidationTriggerEnum = ValidationTriggerEnum.onSync;
 
   public debounceTimer: number = 1000;
-  public onDebounce: Subject<boolean> = new Subject<boolean>();
-  public onSubmit: Subject<any> = new Subject<any>();
-  public onClear: Subject<any> = new Subject<any>();
-  public unsubscribe: Subject<any> = new Subject<void>();
+
+  // TODO: merge this into one subject and check by message type?
+  public onDebounce: Subject<void> = new Subject<void>();
+  public onSubmit: Subject<void> = new Subject<void>();
+  public onClear: Subject<void> = new Subject<void>();
+  public unsubscribe: Subject<void> = new Subject<void>();
 
   public get invalid(): boolean {
     return Object.values(this.controls).some(
