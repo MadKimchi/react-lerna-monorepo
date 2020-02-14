@@ -28,6 +28,7 @@ export const ControlInput: FunctionComponent<IFormControlProps> = ({
   const props: FilledInputProps = {};
   props.id = controlRef.key;
   props.inputRef = ref;
+
   // callbacks
   props.onClick = () => {
     if (!controlRef.isTouched) {
@@ -69,32 +70,27 @@ export const ControlInput: FunctionComponent<IFormControlProps> = ({
       controlRef.formGroupRef.onSubmit
         .pipe(
           takeWhile(() => trigger === ValidationTriggerEnum.onAsync),
-          takeUntil(controlRef.formGroupRef.unsubscribe)
+          takeUntil(controlRef.unsubscribe)
         )
         .subscribe(() => {
           setError(controlRef.invalid);
         });
 
       controlRef.formGroupRef.onClear
-        .pipe(takeUntil(controlRef.formGroupRef.unsubscribe))
+        .pipe(takeUntil(controlRef.unsubscribe))
         .subscribe(() => {
-          (ref.current as any).value = '';
+          controlRef.clear();
+          (ref.current as any).value = controlRef.value;
           setError(false);
           setShrink(false);
         });
 
       return () => {
-        // controlRef.formGroupRef.unsubscribe.next();
-        // controlRef.formGroupRef.unsubscribe.complete();
+        controlRef.unsubscribe.next();
+        controlRef.unsubscribe.complete();
       };
     },
-    [
-      trigger,
-      controlRef.invalid,
-      controlRef.formGroupRef.onSubmit,
-      controlRef.formGroupRef.onClear,
-      controlRef.formGroupRef.unsubscribe
-    ]
+    [controlRef, trigger]
   );
 
   return (
@@ -103,11 +99,12 @@ export const ControlInput: FunctionComponent<IFormControlProps> = ({
         {controlRef.label}
       </InputLabel>
       <FilledInput {...props} />
-      {error && (
-        <FormHelperText id="my-helper-text">
-          We'll never share your email.
-        </FormHelperText>
-      )}
+      {error &&
+        controlRef.errors.map((error: string, index: number) => (
+          <FormHelperText id="my-helper-text" key={index}>
+            {error}
+          </FormHelperText>
+        ))}
     </FormControl>
   );
 };

@@ -29,16 +29,18 @@ export const RxButtonSubmit: FunctionComponent<IFormGroupProps> = ({
         .subscribe(() => {
           setInvalid(formGroupRef.invalid);
         });
-      // return () => subscription.unsubscribe();
+
+      formGroupRef.onClear
+        .pipe(takeUntil(formGroupRef.unsubscribe))
+        .subscribe(() => {
+          setInvalid(formGroupRef.invalid);
+        });
+      return () => {
+        formGroupRef.unsubscribe.next();
+        formGroupRef.unsubscribe.complete();
+      };
     },
-    [
-      formGroupRef.onDebounce,
-      formGroupRef.controls,
-      formGroupRef.invalid,
-      formGroupRef.debounceTimer,
-      formGroupRef.unsubscribe,
-      formGroupRef.validationTrigger
-    ]
+    [formGroupRef]
   );
 
   function onClick(): void {

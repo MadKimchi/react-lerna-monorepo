@@ -46,25 +46,18 @@ const App = () => {
     ));
   }
 
-  useEffect(
-    () => {
-      formGroup.onSubmit
-        .pipe(takeUntil(formGroup.unsubscribe))
-        .subscribe(() => {
-          Object.values(formGroup.controls).forEach(
-            (control: RxFormControlRef) => {
-              console.log(control);
-            }
-          );
-        });
+  useEffect(() => {
+    formGroup.onSubmit.pipe(takeUntil(formGroup.unsubscribe)).subscribe(() => {
+      Object.values(formGroup.controls).forEach((control: RxFormControlRef) => {
+        console.log(control);
+      });
+    });
 
-      return () => {
-        formGroup.unsubscribe.next();
-        formGroup.unsubscribe.complete();
-      };
-    },
-    [formGroup.onSubmit]
-  );
+    return () => {
+      formGroup.unsubscribe.next();
+      formGroup.unsubscribe.complete();
+    };
+  }, []);
 
   return (
     <div className="App">

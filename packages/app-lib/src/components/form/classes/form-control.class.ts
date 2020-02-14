@@ -10,10 +10,10 @@ export class RxFormControlRef {
   public label: string = '';
   public value: string = '';
   public validators: Function[] = [];
+  public _errors: Map<string, string> = new Map();
   public formGroupRef!: RxFormGroupRef; // prettier-ignore
 
-  public subject: Subject<any> = new Subject<any>();
-  // public unsubscribe: Subject<any> = new Subject<void>();
+  public unsubscribe: Subject<void> = new Subject<void>();
 
   constructor(public key: string, public type: ControlTypeEnum) {
     this.setError = this.setError.bind(this);
@@ -21,6 +21,13 @@ export class RxFormControlRef {
 
   public get valid(): boolean {
     return !this.invalid;
+  }
+
+  public get errors(): string[] {
+    if (this.hasError) {
+      return Array.from(this._errors.values());
+    }
+    return [];
   }
 
   public get invalid(): boolean {
@@ -40,6 +47,10 @@ export class RxFormControlRef {
   }
 
   private setError(hasError: boolean, validator: Function): boolean {
-    return hasError && validator(this.value);
+    const error = validator(this.value);
+    if (!!error) {
+      this._errors.set(error.key, error.msg);
+    }
+    return hasError && !!error;
   }
 }
