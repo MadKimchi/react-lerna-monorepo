@@ -20,6 +20,16 @@ export class RxFormGroupRef {
     );
   }
 
+  public get values(): { [key: string]: any } {
+    return Object.values(this.controls).reduce(
+      (values: { [key: string]: any }, control: RxFormControlRef) => {
+        values[control.key] = control.value;
+        return values;
+      },
+      {}
+    );
+  }
+
   public addControl(control: RxFormControlRef): void {
     control.formGroupRef = this;
     this.controls[control.key] = control;
