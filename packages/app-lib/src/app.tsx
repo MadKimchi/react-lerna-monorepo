@@ -11,18 +11,21 @@ import {
   ControlTypeEnum,
   StringValidator,
   ValidationTriggerEnum,
-  IRxFormControlRef
+  IRxFormControlRef,
+  RxSelectControlRef,
+  IRxFormControlRefExtras
 } from './components';
+import { IControlSelectOption } from './components/form/components/form-control/control-select/control-select.interface';
 
 const App = () => {
   const formGroup = new RxFormGroupRef();
   formGroup.validationTrigger = ValidationTriggerEnum.onBlur;
   buildInputControl('1', formGroup);
   buildInputControl('2', formGroup);
-  buildInputControl('3', formGroup);
-  buildInputControl('4', formGroup);
-  buildInputControl('5', formGroup);
-  buildInputControl('6', formGroup);
+  buildSelectControl('3', formGroup);
+  buildSelectControl('4', formGroup);
+  buildSelectControl('5', formGroup);
+  buildSelectControl('6', formGroup);
   buildInputControl('7', formGroup);
   buildInputControl('8', formGroup);
   buildInputControl('9', formGroup);
@@ -35,9 +38,22 @@ const App = () => {
   );
 
   function buildInputControl(key: string, formGroupRef: RxFormGroupRef): void {
-    const inputControl = new RxFormControlRef(key, ControlTypeEnum.select);
+    const inputControl = new RxFormControlRef(key, ControlTypeEnum.input);
     inputControl.label = `some label ${key}`;
     inputControl.validators = [StringValidator(3)];
+    formGroupRef.addControl(inputControl);
+  }
+
+  function buildSelectControl(key: string, formGroupRef: RxFormGroupRef): void {
+    const inputControl = new RxSelectControlRef(key, ControlTypeEnum.select);
+    inputControl.label = `some label ${key}`;
+    inputControl.validators = [selectValidator(3)];
+
+    const extras: IRxFormControlRefExtras = {};
+    extras.isMultiple = true;
+    extras.options = getOptions();
+
+    inputControl.extras = extras;
     formGroupRef.addControl(inputControl);
   }
 
@@ -47,20 +63,55 @@ const App = () => {
     ));
   }
 
-  useEffect(() => {
-    formGroup.onSubmit.pipe(takeUntil(formGroup.unsubscribe)).subscribe(() => {
-      Object.values(formGroup.controls).forEach(
-        (control: IRxFormControlRef) => {
-          console.log(control);
-        }
-      );
-    });
+  function getOptions(): IControlSelectOption<string>[] {
+    const options = [
+      'Oliver Hansen',
+      'Van Henry',
+      'April Tucker',
+      'Ralph Hubbard',
+      'Omar Alexander',
+      'Carlos Abbott',
+      'Miriam Wagner',
+      'Bradley Wilkerson',
+      'Virginia Andrews',
+      'Kelly Snyder'
+    ];
 
-    return () => {
-      formGroup.unsubscribe.next();
-      formGroup.unsubscribe.complete();
+    return options.map((name: string, index: number) => ({
+      id: `${index}`,
+      label: name,
+      value: name
+    }));
+  }
+
+  function selectValidator(minLength: number): Function {
+    return (value: any[]): { key: string; msg: string } | null => {
+      const hasError = (!!value && value.length < minLength) || !value;
+      return hasError
+        ? { key: 'minLength', msg: `At least ${minLength} characters` }
+        : null;
     };
-  }, []);
+  }
+
+  useEffect(
+    () => {
+      formGroup.onSubmit
+        .pipe(takeUntil(formGroup.unsubscribe))
+        .subscribe(() => {
+          Object.values(formGroup.controls).forEach(
+            (control: IRxFormControlRef) => {
+              console.log(control);
+            }
+          );
+        });
+
+      return () => {
+        formGroup.unsubscribe.next();
+        formGroup.unsubscribe.complete();
+      };
+    },
+    [formGroup]
+  );
 
   return (
     <div className="App">

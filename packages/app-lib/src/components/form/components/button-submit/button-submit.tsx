@@ -60,7 +60,3 @@ export const RxButtonSubmit: FunctionComponent<IFormGroupProps> = ({
     </Button>
   );
 };
-
-{
-  /* <Button>Default</Button>; */
-}
