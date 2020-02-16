@@ -22,10 +22,10 @@ const App = () => {
   formGroup.validationTrigger = ValidationTriggerEnum.onBlur;
   buildInputControl('1', formGroup);
   buildInputControl('2', formGroup);
-  buildInputControl('3', formGroup);
-  buildInputControl('4', formGroup);
-  buildInputControl('5', formGroup);
-  buildInputControl('6', formGroup);
+  buildSelectControl('3', formGroup);
+  buildSelectControl('4', formGroup);
+  buildSelectControl('5', formGroup);
+  buildSelectControl('6', formGroup);
   buildInputControl('7', formGroup);
   buildInputControl('8', formGroup);
   buildInputControl('9', formGroup);
@@ -38,6 +38,13 @@ const App = () => {
   );
 
   function buildInputControl(key: string, formGroupRef: RxFormGroupRef): void {
+    const inputControl = new RxSelectControlRef(key, ControlTypeEnum.input);
+    inputControl.label = `some label ${key}`;
+    inputControl.validators = [StringValidator(3)];
+    formGroupRef.addControl(inputControl);
+  }
+
+  function buildSelectControl(key: string, formGroupRef: RxFormGroupRef): void {
     const inputControl = new RxSelectControlRef(key, ControlTypeEnum.select);
     inputControl.label = `some label ${key}`;
     inputControl.validators = [selectValidator(3)];

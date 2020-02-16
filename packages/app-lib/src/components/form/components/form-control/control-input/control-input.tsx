@@ -22,21 +22,21 @@ export const ControlInput: FunctionComponent<IFormControlProps> = ({
 }): ReactElement => {
   const [shrink, setShrink] = useState(false);
   const [error, setError] = useState(false);
-  const ref = useRef();
   const trigger = controlRef.formGroupRef.validationTrigger;
 
-  const props: FilledInputProps = {};
-  props.id = controlRef.key;
-  props.inputRef = ref;
+  const ref = useRef();
+  const props = useRef<FilledInputProps>({});
+  props.current.id = controlRef.key;
+  props.current.inputRef = ref;
 
   // callbacks
-  props.onClick = () => {
+  props.current.onClick = () => {
     if (!controlRef.isTouched) {
       controlRef.isTouched = true;
     }
   };
 
-  props.onChange = (event: ChangeEvent<HTMLInputElement>) => {
+  props.current.onChange = (event: ChangeEvent<HTMLInputElement>) => {
     controlRef.value = event.target.value;
 
     // possibly move this logic to class setter
@@ -54,11 +54,11 @@ export const ControlInput: FunctionComponent<IFormControlProps> = ({
     controlRef.formGroupRef.onDebounce.next();
   };
 
-  props.onFocus = (): void => {
+  props.current.onFocus = (): void => {
     setShrink(true);
   };
 
-  props.onBlur = (): void => {
+  props.current.onBlur = (): void => {
     if (!controlRef.value) {
       setShrink(false);
     }
@@ -98,7 +98,7 @@ export const ControlInput: FunctionComponent<IFormControlProps> = ({
       <InputLabel htmlFor="field-email" shrink={shrink}>
         {controlRef.label}
       </InputLabel>
-      <FilledInput {...props} />
+      <FilledInput {...props.current} />
       {error &&
         controlRef.errors.map((error: string, index: number) => (
           <FormHelperText id="my-helper-text" key={index}>
