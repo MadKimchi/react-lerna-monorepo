@@ -1,6 +1,12 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 
-import { makeStyles, Theme, createStyles, useTheme } from '@material-ui/core';
+import {
+  makeStyles,
+  Theme,
+  createStyles,
+  useTheme,
+  MenuProps
+} from '@material-ui/core';
 
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -9,19 +15,30 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Chip from '@material-ui/core/Chip';
 import Input from '@material-ui/core/Input';
 import Select, { SelectProps } from '@material-ui/core/Select';
+import Autocomplete, { AutocompleteProps } from '@material-ui/lab/Autocomplete';
+import TextField from '@material-ui/core/TextField';
 
 import {
   IPropsControlSelect,
   IControlSelectOption
 } from './control-select.interface';
 import { useStyles, getStyles } from './control-select.style';
+import { UseAutocompleteProps } from '@material-ui/lab/useAutocomplete';
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
+const menuProps: Partial<MenuProps> = {
+  anchorOrigin: {
+    vertical: 'bottom',
+    horizontal: 'left'
+  },
+  transformOrigin: {
+    vertical: 'top',
+    horizontal: 'left'
+  },
+  getContentAnchorEl: null,
   PaperProps: {
     style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      // ITEM_HEIGHT: 48, ITEM_PADDING_TOP: 8
+      maxHeight: 48 * 4.5 + 8,
       width: 250
     }
   }
@@ -33,14 +50,12 @@ export const ControlSelect: FunctionComponent<IPropsControlSelect<any>> = ({
 }) => {
   const classes = useStyles();
   const theme = useTheme();
-  const [personName, setPersonName] = React.useState<string[]>([]);
-
-  const props: SelectProps = {};
-  props.id = controlRef.key;
+  const [selected, setSelected] = useState<string[]>([]);
+  const [error, setError] = useState(true);
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setPersonName(event.target.value as string[]);
-    console.log(personName);
+    setSelected(event.target.value as string[]);
+    console.log(selected);
   };
 
   const handleChangeMultiple = (
@@ -53,58 +68,137 @@ export const ControlSelect: FunctionComponent<IPropsControlSelect<any>> = ({
         value.push(options[i].value);
       }
     }
-    setPersonName(value);
+    setSelected(value);
   };
 
-  function handleDelete(): void {}
+  function handleDelete(selected: SelectProps['value']): Function {
+    return function(): void {
+      console.log(selected);
+    };
+  }
+
+  function handleChipClick(ev: any): void {
+    ev.preventDefault();
+  }
+
+  const props: AutocompleteProps<any> & UseAutocompleteProps<any> = {};
+  props.id = controlRef.key;
+  props.multiple = true; // controlRef.isMultiple
+  props.value = selected;
+  props.options = options; // controlRef.isMultiple
+  props.onChange = handleChange;
+
+  // if (controlRef.customInput) {
+  //   // props.input = <Input id="select-multiple-chip" />;
+  //   props.input = customInput;
+  // }
+
+  if (props.multiple) {
+    props.renderValue = (selected: SelectProps['value']) => (
+      <div className={classes.chips}>
+        {(selected as string[]).map(value => (
+          <Chip
+            color="primary"
+            className={classes.chip}
+            key={value}
+            label={value}
+            onClick={handleChipClick}
+            onDelete={handleDelete}
+          />
+        ))}
+      </div>
+    );
+    props.MenuProps = menuProps;
+  }
 
   return (
-    <FormControl variant="filled" className={classes.formControl}>
-      <InputLabel id="demo-simple-select-filled-label">
-        {controlRef.label}
-      </InputLabel>
-      <Select
-        // labelId="demo-simple-select-filled-label"
-        // id="demo-simple-select-filled"
+    // <FormControl variant="filled" className={classes.formControl}>
+    <div>
+      <Autocomplete
         multiple
-        value={personName}
-        onChange={handleChange}
-      >
-        {options.map((option: IControlSelectOption<any>) => (
-          <MenuItem
-            key={option.id}
-            value={option.value}
-            style={getStyles(option.value, personName, theme)}
-          >
-            {option.label}
-          </MenuItem>
+        id="size-small-filled-multi"
+        size="small"
+        options={options}
+        getOptionLabel={option => option.label}
+        // defaultValue={[options[0]]}
+        renderTags={(value, getTagProps) =>
+          value.map((option, index) => (
+            <Chip
+              variant="outlined"
+              label={option.label}
+              size="small"
+              {...getTagProps({ index })}
+            />
+          ))
+        }
+        renderInput={params => (
+          <TextField
+            {...params}
+            variant="filled"
+            label="Size small"
+            placeholder="Favorites"
+            fullWidth
+          />
+        )}
+      />;
+      {controlRef.hasError &&
+        controlRef.errors.map((error: string, index: number) => (
+          <FormHelperText id="my-helper-text" key={index}>
+            {error}
+          </FormHelperText>
         ))}
-      </Select>
-    </FormControl>
+    </div>
   );
-  // <FormControl variant="filled" className={classes.formControl}>
-  //     <InputLabel id="demo-mutiple-chip-label">Chip</InputLabel>
-  //     <Select labelId="demo-mutiple-chip-label" id="demo-mutiple-chip" multiple value={personName} onChange={handleChange} input={<Input id="select-multiple-chip" />} renderValue={selected => <div
-  //           className={classes.chips}
-  //         >
-  //           {(selected as string[]).map(value => (
-  //             <Chip
-  //               className={classes.chip}
-  //               key={value}
-  //               label={value}
-  //               onDelete={handleDelete}
-  //             />
-  //           ))}
-  //         </div>} MenuProps={MenuProps}>
-  //       {options.map(option => (
-  //         <MenuItem
-  //           key={option.id}
-  //           value={option.value}
-  //           style={getStyles(option.value, personName, theme)}
-  //         >
-  //           {option.label}
-  //         </MenuItem>
+
+  // const props: SelectProps = {};
+  // props.id = controlRef.key;
+  // props.multiple = true; // controlRef.isMultiple
+  // props.value = selected;
+  // props.onChange = handleChange;
+
+  // // if (controlRef.customInput) {
+  // //   // props.input = <Input id="select-multiple-chip" />;
+  // //   props.input = customInput;
+  // // }
+
+  // if (props.multiple) {
+  //   props.renderValue = (selected: SelectProps['value']) => <div
+  //       className={classes.chips}
+  //     >
+  //       {(selected as string[]).map(value => (
+  //         <Chip
+  //           color="primary"
+  //           className={classes.chip}
+  //           key={value}
+  //           label={value}
+  //           onClick={handleChipClick}
+  //           onDelete={handleDelete}
+  //         />
   //       ))}
-  //     </Select>
-  //   </FormControl>;
+  //     </div>;
+  //   props.MenuProps = menuProps;
+  // }
+
+  // <FormControl variant="filled" className={classes.formControl}>
+  //   <InputLabel id="demo-simple-select-filled-label">
+  //     {controlRef.label}
+  //   </InputLabel>
+  //   <Select {...props}>
+  //     {options.map((option: IControlSelectOption<any>) => (
+  //       <MenuItem
+  //         key={option.id}
+  //         value={option.value}
+  //         style={getStyles(option.value, selected, theme)}
+  //       >
+  //         {option.label}
+  //       </MenuItem>
+  //     ))}
+  //   </Select>
+  //   {controlRef.hasError &&
+  //     controlRef.errors.map((error: string, index: number) => (
+  //       <FormHelperText id="my-helper-text" key={index}>
+  //         {error}
+  //       </FormHelperText>
+  //     ))}
+  // </FormControl>
 };
