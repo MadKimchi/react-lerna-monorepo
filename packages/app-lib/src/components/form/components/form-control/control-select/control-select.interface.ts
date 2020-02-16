@@ -1,4 +1,5 @@
 import { IFormControlProps } from '../../../interfaces';
+import { RxFormControlRef, RxSelectControlRef } from '../../../classes';
 
 export interface IControlSelectOption<T> {
   id: string;
@@ -6,6 +7,6 @@ export interface IControlSelectOption<T> {
   value: T;
 }
 
-export interface IPropsControlSelect<T> extends IFormControlProps {
-  options: IControlSelectOption<T>[];
-}
+// export interface IPropsControlSelect<T> extends IFormControlProps {
+//   options: IControlSelectOption<T>[];
+// }

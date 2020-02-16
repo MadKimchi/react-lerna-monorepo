@@ -36,7 +36,7 @@ export const RxFormControl: FunctionComponent<IFormControlProps> = ({
           value: name
         }));
 
-        return <ControlSelect controlRef={controlRef} options={options} />;
+        return <ControlSelect controlRef={controlRef} />;
       }
 
       default: {

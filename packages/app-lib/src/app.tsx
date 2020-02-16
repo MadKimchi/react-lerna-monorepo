@@ -11,8 +11,11 @@ import {
   ControlTypeEnum,
   StringValidator,
   ValidationTriggerEnum,
-  IRxFormControlRef
+  IRxFormControlRef,
+  RxSelectControlRef,
+  IRxFormControlRefExtras
 } from './components';
+import { IControlSelectOption } from './components/form/components/form-control/control-select/control-select.interface';
 
 const App = () => {
   const formGroup = new RxFormGroupRef();
@@ -35,9 +38,15 @@ const App = () => {
   );
 
   function buildInputControl(key: string, formGroupRef: RxFormGroupRef): void {
-    const inputControl = new RxFormControlRef(key, ControlTypeEnum.select);
+    const inputControl = new RxSelectControlRef(key, ControlTypeEnum.select);
     inputControl.label = `some label ${key}`;
-    inputControl.validators = [StringValidator(3)];
+    inputControl.validators = [selectValidator(3)];
+
+    const extras: IRxFormControlRefExtras = {};
+    extras.isMultiple = true;
+    extras.options = getOptions();
+
+    inputControl.extras = extras;
     formGroupRef.addControl(inputControl);
   }
 
@@ -45,6 +54,36 @@ const App = () => {
     return form.map((controlRef: IRxFormControlRef) => (
       <RxFormControl key={controlRef.key} controlRef={controlRef} />
     ));
+  }
+
+  function getOptions(): IControlSelectOption<string>[] {
+    const options = [
+      'Oliver Hansen',
+      'Van Henry',
+      'April Tucker',
+      'Ralph Hubbard',
+      'Omar Alexander',
+      'Carlos Abbott',
+      'Miriam Wagner',
+      'Bradley Wilkerson',
+      'Virginia Andrews',
+      'Kelly Snyder'
+    ];
+
+    return options.map((name: string, index: number) => ({
+      id: `${index}`,
+      label: name,
+      value: name
+    }));
+  }
+
+  function selectValidator(minLength: number): Function {
+    return (value: any[]): { key: string; msg: string } | null => {
+      const hasError = (!!value && value.length < minLength) || !value;
+      return hasError
+        ? { key: 'minLength', msg: `At least ${minLength} characters` }
+        : null;
+    };
   }
 
   useEffect(() => {
