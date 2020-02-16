@@ -7,6 +7,7 @@ import {
   RxButtonClear
 } from '../../../components';
 import { RxFormGroupRef, RxFormControlRef } from '../classes';
+import { IRxFormControlRef } from '../interfaces';
 import { ValidationTriggerEnum, ControlTypeEnum } from '../enums';
 import { StringValidator } from '../validators';
 import { makeStyles } from '@material-ui/core';
@@ -60,7 +61,7 @@ export const withFormGroup = () => {
 
   const form = buildForm(formGroup);
 
-  function buildForm(formGroup: RxFormGroupRef): RxFormControlRef[] {
+  function buildForm(formGroup: RxFormGroupRef): IRxFormControlRef[] {
     buildInputControl('1', formGroup);
     buildInputControl('2', formGroup);
     buildInputControl('3', formGroup);
@@ -74,7 +75,7 @@ export const withFormGroup = () => {
     buildInputControl('11', formGroup);
     buildInputControl('12', formGroup);
     return Object.values(formGroup.controls).map(
-      (control: RxFormControlRef) => control
+      (control: IRxFormControlRef) => control
     );
   }
 
@@ -87,7 +88,7 @@ export const withFormGroup = () => {
   }
 
   function renderControls(): ReactElement[] {
-    return form.map((controlRef: RxFormControlRef) => (
+    return form.map((controlRef: IRxFormControlRef) => (
       <div
         className={`${classes.control} ${classes.column}`}
         key={controlRef.key}
@@ -120,7 +121,7 @@ export const onDebounce5000MS = () => {
 
   const form = buildForm(formGroup);
 
-  function buildForm(formGroup: RxFormGroupRef): RxFormControlRef[] {
+  function buildForm(formGroup: RxFormGroupRef): IRxFormControlRef[] {
     buildInputControl('key1', formGroup);
     buildInputControl('key2', formGroup);
     buildInputControl('key3', formGroup);
@@ -128,7 +129,7 @@ export const onDebounce5000MS = () => {
     buildInputControl('key5', formGroup);
 
     return Object.values(formGroup.controls).map(
-      (control: RxFormControlRef) => control
+      (control: IRxFormControlRef) => control
     );
   }
 
@@ -140,7 +141,7 @@ export const onDebounce5000MS = () => {
   }
 
   function renderControls(): ReactElement[] {
-    return form.map((controlRef: RxFormControlRef) => (
+    return form.map((controlRef: IRxFormControlRef) => (
       <div
         className={`${classes.control} ${classes.column}`}
         key={controlRef.key}

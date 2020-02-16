@@ -10,7 +10,8 @@ import {
   RxButtonClear,
   ControlTypeEnum,
   StringValidator,
-  ValidationTriggerEnum
+  ValidationTriggerEnum,
+  IRxFormControlRef
 } from './components';
 
 const App = () => {
@@ -30,27 +31,29 @@ const App = () => {
   buildInputControl('12', formGroup);
 
   const form = Object.values(formGroup.controls).map(
-    (control: RxFormControlRef) => control
+    (control: IRxFormControlRef) => control
   );
 
   function buildInputControl(key: string, formGroupRef: RxFormGroupRef): void {
-    const inputControl = new RxFormControlRef(key, ControlTypeEnum.input);
+    const inputControl = new RxFormControlRef(key, ControlTypeEnum.select);
     inputControl.label = `some label ${key}`;
     inputControl.validators = [StringValidator(3)];
     formGroupRef.addControl(inputControl);
   }
 
   function renderControls(): ReactElement[] {
-    return form.map((controlRef: RxFormControlRef) => (
+    return form.map((controlRef: IRxFormControlRef) => (
       <RxFormControl key={controlRef.key} controlRef={controlRef} />
     ));
   }
 
   useEffect(() => {
     formGroup.onSubmit.pipe(takeUntil(formGroup.unsubscribe)).subscribe(() => {
-      Object.values(formGroup.controls).forEach((control: RxFormControlRef) => {
-        console.log(control);
-      });
+      Object.values(formGroup.controls).forEach(
+        (control: IRxFormControlRef) => {
+          console.log(control);
+        }
+      );
     });
 
     return () => {

@@ -1,9 +1,10 @@
 import { Subject } from 'rxjs';
-import { RxFormControlRef } from './form-control.class';
+
 import { ValidationTriggerEnum } from '../enums';
+import { IRxFormControlRef } from '../interfaces';
 
 export class RxFormGroupRef {
-  public controls: { [key: string]: RxFormControlRef } = {};
+  public controls: { [key: string]: IRxFormControlRef } = {};
   public validationTrigger: ValidationTriggerEnum = ValidationTriggerEnum.onSync;
 
   public debounceTimer: number = 1000;
@@ -16,13 +17,13 @@ export class RxFormGroupRef {
 
   public get invalid(): boolean {
     return Object.values(this.controls).some(
-      (control: RxFormControlRef) => control.invalid
+      (control: IRxFormControlRef) => control.invalid
     );
   }
 
   public get values(): { [key: string]: any } {
     return Object.values(this.controls).reduce(
-      (values: { [key: string]: any }, control: RxFormControlRef) => {
+      (values: { [key: string]: any }, control: IRxFormControlRef) => {
         values[control.key] = control.value;
         return values;
       },
@@ -30,17 +31,17 @@ export class RxFormGroupRef {
     );
   }
 
-  public addControl(control: RxFormControlRef): void {
+  public addControl(control: IRxFormControlRef): void {
     control.formGroupRef = this;
     this.controls[control.key] = control;
   }
 
-  public getControl(key: string): RxFormControlRef {
+  public getControl(key: string): IRxFormControlRef {
     return this.controls[key];
   }
 
   public clear(): void {
-    Object.values(this.controls).forEach((control: RxFormControlRef) => {
+    Object.values(this.controls).forEach((control: IRxFormControlRef) => {
       control.clear();
     });
   }

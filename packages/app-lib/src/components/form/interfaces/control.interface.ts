@@ -1,9 +1,8 @@
-import { RxFormControlRef } from '../classes';
+import { IRxFormControlRef } from '../interfaces';
 
 export interface IFormControlProps {
   /**
    * Represents the behaviour of the control and communicates with other form related components.
    **/
-  controlRef: RxFormControlRef;
-  refresh?: boolean;
+  controlRef: IRxFormControlRef;
 }
