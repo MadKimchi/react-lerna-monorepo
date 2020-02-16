@@ -17,25 +17,6 @@ export const RxFormControl: FunctionComponent<IFormControlProps> = ({
       }
 
       case ControlTypeEnum.select: {
-        const names = [
-          'Oliver Hansen',
-          'Van Henry',
-          'April Tucker',
-          'Ralph Hubbard',
-          'Omar Alexander',
-          'Carlos Abbott',
-          'Miriam Wagner',
-          'Bradley Wilkerson',
-          'Virginia Andrews',
-          'Kelly Snyder'
-        ];
-
-        const options = names.map((name: string, index: number) => ({
-          id: `${index}`,
-          label: name,
-          value: name
-        }));
-
         return <ControlSelect controlRef={controlRef} />;
       }
 

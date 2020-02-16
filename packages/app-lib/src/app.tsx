@@ -38,7 +38,7 @@ const App = () => {
   );
 
   function buildInputControl(key: string, formGroupRef: RxFormGroupRef): void {
-    const inputControl = new RxSelectControlRef(key, ControlTypeEnum.input);
+    const inputControl = new RxFormControlRef(key, ControlTypeEnum.input);
     inputControl.label = `some label ${key}`;
     inputControl.validators = [StringValidator(3)];
     formGroupRef.addControl(inputControl);
@@ -93,20 +93,25 @@ const App = () => {
     };
   }
 
-  useEffect(() => {
-    formGroup.onSubmit.pipe(takeUntil(formGroup.unsubscribe)).subscribe(() => {
-      Object.values(formGroup.controls).forEach(
-        (control: IRxFormControlRef) => {
-          console.log(control);
-        }
-      );
-    });
+  useEffect(
+    () => {
+      formGroup.onSubmit
+        .pipe(takeUntil(formGroup.unsubscribe))
+        .subscribe(() => {
+          Object.values(formGroup.controls).forEach(
+            (control: IRxFormControlRef) => {
+              console.log(control);
+            }
+          );
+        });
 
-    return () => {
-      formGroup.unsubscribe.next();
-      formGroup.unsubscribe.complete();
-    };
-  }, []);
+      return () => {
+        formGroup.unsubscribe.next();
+        formGroup.unsubscribe.complete();
+      };
+    },
+    [formGroup]
+  );
 
   return (
     <div className="App">
