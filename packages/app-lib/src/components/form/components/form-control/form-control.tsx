@@ -1,4 +1,4 @@
-import React, { FunctionComponent, ReactElement } from 'react';
+import React, { FunctionComponent, ReactElement, ComponentType } from 'react';
 import { ControlInput } from './control-input/control-input';
 import { ControlTypeEnum } from '../../enums';
 import { IFormControlProps } from '../../interfaces';
@@ -10,21 +10,24 @@ import { ControlSelect } from './control-select/control-select';
 export const RxFormControl: FunctionComponent<IFormControlProps> = ({
   controlRef
 }): ReactElement => {
-  const buildControl = (): ReactElement => {
-    switch (controlRef.type) {
-      case ControlTypeEnum.input: {
-        return <ControlInput controlRef={controlRef} />;
-      }
 
-      case ControlTypeEnum.select: {
-        return <ControlSelect controlRef={controlRef} />;
-      }
+  function createControl(controlType: ControlTypeEnum): ComponentType<any> {
+    switch(controlType) {
+        // case ControlTypeEnum.datePicker: {
+        //   return ControlDatePicker
+        // }
+      
+        case ControlTypeEnum.select: {
+            return ControlSelect
+        }
 
-      default: {
-        return <></>;
-      }
+        case ControlTypeEnum.input:
+        default: {
+            return ControlInput
+        }
     }
-  };
+  }
 
-  return buildControl();
+  const Control = createControl(controlRef.type)
+  return <Control controlRef={controlRef} />
 };
