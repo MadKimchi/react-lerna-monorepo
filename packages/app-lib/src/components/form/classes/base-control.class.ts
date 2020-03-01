@@ -7,7 +7,8 @@ export class RxBaseControlRef implements IRxFormControlRef {
     public hasError: boolean = false;
     public isDirty: boolean = false;
     public isTouched: boolean = false;
-
+    
+    public placeholder: string = ''
     public label: string = '';
     public value: any;
     public validators: Function[] = [];

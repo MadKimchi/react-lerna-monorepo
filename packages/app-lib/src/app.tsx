@@ -45,16 +45,13 @@ const App = () => {
   }
 
   function buildSelectControl(key: string, formGroupRef: RxFormGroupRef): void {
-    const inputControl = new RxSelectControlRef(key, ControlTypeEnum.select);
-    inputControl.label = `some label ${key}`;
-    inputControl.validators = [selectValidator(3)];
+    const selectControl = new RxSelectControlRef(key, ControlTypeEnum.select);
+    selectControl.label = `some label ${key}`;
+    selectControl.validators = [selectValidator(3)];
+    selectControl.isMultiple = true;
+    selectControl.options = getOptions();
 
-    const extras: IRxFormControlRefExtras = {};
-    extras.isMultiple = true;
-    extras.options = getOptions();
-
-    inputControl.extras = extras;
-    formGroupRef.addControl(inputControl);
+    formGroupRef.addControl(selectControl);
   }
 
   function renderControls(): ReactElement[] {
