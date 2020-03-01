@@ -23,10 +23,10 @@ interface IProps {
 
 export const ControlSelect: FunctionComponent<IProps> = ({
   controlRef
-}) => {;
+}) => {
+  const [selected, setSelected] = useState<any[]>(controlRef.value);
   const [error, setError] = useState(false);
 
-  const ref = useRef<ReactNode>();
   const props = useRef<AutocompleteProps<any> & UseAutocompleteProps<any>>(
     {
       multiple: controlRef.isMultiple as true,
@@ -34,7 +34,7 @@ export const ControlSelect: FunctionComponent<IProps> = ({
     }
   ); 
 
-  props.current.value = []
+  props.current.value = selected
   props.current.id = controlRef.key;
   props.current.options = controlRef.options;
   props.current.getOptionLabel = (option: IControlSelectOption<any>) => option.label;
@@ -59,17 +59,14 @@ export const ControlSelect: FunctionComponent<IProps> = ({
     setError(controlRef.invalid);
   };
   
-  props.current.onChange = (event: React.ChangeEvent<{}>, value: any | null): void => {  
-    console.log(value)
-    // const selected = value.find(value.id)
+  props.current.onChange = (event: React.ChangeEvent<{}>, value: any | null): void => {
+    console.log('???')
     controlRef.value = value
+    setSelected(controlRef.value)
+    
     if (error !== controlRef.invalid) {
       setError(!controlRef.hasError);
     }
-    console.log(event)
-    console.log(value)
-    console.log(props.current.inputValue)
-    // controlRef.formGroupRef.onDebounce.next();
   }
 
   props.current.renderTags = (value: any[], getTagProps: GetTagProps) => {
@@ -103,14 +100,10 @@ export const ControlSelect: FunctionComponent<IProps> = ({
       .pipe(takeUntil(controlRef.unsubscribe))
       .subscribe(() => {
         controlRef.clear();
-        ref.current = []
-        
-        // props.current.renderTags([], () => {})
-        // (ref.current as any).value = controlRef.value;
+        setSelected(controlRef.value)
         setError(false);
-        // setShrink(false);
       })
-  }, [])
+  }, [controlRef])
 
   return (
     <div>
