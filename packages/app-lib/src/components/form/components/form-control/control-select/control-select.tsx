@@ -1,7 +1,7 @@
-import React, { FunctionComponent, useState, useRef } from 'react';
+import React, { ReactNode, FunctionComponent, useState, useRef, useEffect } from 'react';
+import { takeUntil } from 'rxjs/operators'
 
 import FormHelperText from '@material-ui/core/FormHelperText';
-
 import Chip from '@material-ui/core/Chip';
 
 import Autocomplete, {
@@ -15,40 +15,30 @@ import {
   IControlSelectOption
 } from './control-select.interface';
 import { UseAutocompleteProps } from '@material-ui/lab/useAutocomplete';
-import { IFormControlProps } from '../../../interfaces';
+import { RxSelectControlRef } from '../../../classes';
 
-export const ControlSelect: FunctionComponent<IFormControlProps> = ({
+interface IProps {
+  controlRef: RxSelectControlRef
+}
+
+export const ControlSelect: FunctionComponent<IProps> = ({
   controlRef
-}) => {;
+}) => {
+  const [selected, setSelected] = useState<any[]>(controlRef.value);
   const [error, setError] = useState(false);
 
-  const props = useRef<AutocompleteProps<any> & UseAutocompleteProps<any>>(
-    {
-      multiple: controlRef.extras && controlRef.extras.isMultiple ? undefined : false,
-      renderInput: (params: RenderInputParams) => (
-        <TextField
-          {...params}
-          variant="filled"
-          label="Size small"
-          placeholder="Favorites"
-          fullWidth
-        />
-      )
-    }
-  );  
+  const props = useRef<AutocompleteProps<any> & UseAutocompleteProps<any>>();
+  props.current = {
+    multiple: controlRef.isMultiple as true,
+    renderInput
+  };
+
+  
+  props.current.value = selected
   props.current.id = controlRef.key;
-  props.current.options = controlRef.extras?.options;
+  props.current.options = controlRef.options;
   props.current.getOptionLabel = (option: IControlSelectOption<any>) => option.label;
-  props.current.renderInput = (params: RenderInputParams) => (
-    <TextField
-      {...params}
-      error={error}
-      variant="filled"
-      label="Size small"
-      placeholder="Favorites"
-      fullWidth
-    />
-  );
+
   props.current.onClick = (): void => {
     if (!controlRef.isTouched) {
       controlRef.isTouched = true;
@@ -56,19 +46,21 @@ export const ControlSelect: FunctionComponent<IFormControlProps> = ({
   };
 
   props.current.onBlur = (): void => {
-    // TODO: set the error by trigger type
     setError(controlRef.invalid);
   };
   
-  props.current.onChange = (event: React.ChangeEvent<{}>, value: any | null): void => {  
-    controlRef.value.add(value);
+  props.current.onChange = (event: React.ChangeEvent<{}>, value: any | null): void => {
+    console.log('???')
+    controlRef.value = value
+    setSelected(controlRef.value)
+    
     if (error !== controlRef.invalid) {
       setError(!controlRef.hasError);
     }
   }
 
-  props.current.renderTags = (value: any[], getTagProps: GetTagProps) =>
-    value.map((option, index) => (
+  props.current.renderTags = (value: any[], getTagProps: GetTagProps) => {
+    return value.map((option: IControlSelectOption<any>, index: number) => (
       <Chip
         variant="outlined"
         label={option.label}
@@ -76,6 +68,31 @@ export const ControlSelect: FunctionComponent<IFormControlProps> = ({
         {...getTagProps({ index })}
       />
     ));
+  }
+  
+  function renderInput(params: RenderInputParams) {
+    console.log(error)
+    return (
+      <TextField
+        {...params}
+        error={error}
+        variant="filled"
+        label={controlRef.label}
+        placeholder={controlRef.placeholder}
+        fullWidth
+      />
+    );
+  }
+
+  useEffect(()=> {
+    controlRef.formGroupRef.onClear
+      .pipe(takeUntil(controlRef.unsubscribe))
+      .subscribe(() => {
+        controlRef.clear();
+        setSelected(controlRef.value)
+        setError(false);
+      })
+  }, [controlRef])
 
   return (
     <div>
