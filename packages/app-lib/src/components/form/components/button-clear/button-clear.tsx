@@ -1,10 +1,17 @@
 import React, { FunctionComponent, ReactElement } from 'react';
 import Button from '@material-ui/core/Button';
 
-import { IFormGroupProps } from '../../interfaces/group.interface';
+import { RxFormGroupRef } from '../../classes';
 
-export const RxButtonClear: FunctionComponent<IFormGroupProps> = ({
-  formGroupRef
+interface IRxButtonClearProps {
+  formGroupRef: RxFormGroupRef;
+  clearLabel?: string;
+}
+
+export const RxButtonClear: FunctionComponent<IRxButtonClearProps> = ({
+  formGroupRef,
+  // TODO: this should be handled by language service
+  clearLabel = 'Clear'
 }): ReactElement => {
   function onClick(): void {
     formGroupRef.onClear.next();
@@ -12,7 +19,7 @@ export const RxButtonClear: FunctionComponent<IFormGroupProps> = ({
 
   return (
     <Button type="button" onClick={onClick}>
-      Clear
+      {clearLabel}
     </Button>
   );
 };

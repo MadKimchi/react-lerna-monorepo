@@ -5,12 +5,13 @@ import {
   RxFormControl,
   RxButtonSubmit,
   RxButtonClear
-} from '../../../components';
+} from '../..';
 import { RxFormGroupRef, RxFormControlRef } from '../classes';
 import { IRxFormControlRef } from '../interfaces';
 import { ValidationTriggerEnum, ControlTypeEnum } from '../enums';
 import { StringValidator } from '../validators';
 import { makeStyles } from '@material-ui/core';
+import { RxForm } from '../form';
 
 const useStyles = makeStyles({
   column: {
@@ -33,8 +34,8 @@ const useStyles = makeStyles({
 });
 
 export default {
-  title: 'Components/RxFormControl/Input',
-  component: RxFormControl
+  title: 'Components/RxForm',
+  component: RxForm
 };
 export const validateOnBlur = () => {
   const controlRef = new RxFormControlRef('inputKey', ControlTypeEnum.input);

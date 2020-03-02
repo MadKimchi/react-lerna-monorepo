@@ -13,9 +13,9 @@ import {
   ValidationTriggerEnum,
   IRxFormControlRef,
   RxSelectControlRef,
-  IRxFormControlRefExtras
+  IControlSelectOption,
+  RxForm
 } from './components';
-import { IControlSelectOption } from './components/form/components/form-control/control-select/control-select.interface';
 
 const App = () => {
   const formGroup = new RxFormGroupRef();
@@ -112,9 +112,11 @@ const App = () => {
 
   return (
     <div className="App">
-      {renderControls()}
-      <RxButtonSubmit formGroupRef={formGroup} />
-      <RxButtonClear formGroupRef={formGroup} />
+      <RxForm formGroupRef={formGroup}>
+        {renderControls()}
+      </RxForm>
+      {/* <RxButtonSubmit formGroupRef={formGroup} /> */}
+      {/* <RxButtonClear formGroupRef={formGroup} /> */}
     </div>
   );
 };
