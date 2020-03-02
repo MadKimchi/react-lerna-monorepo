@@ -27,28 +27,18 @@ export const ControlSelect: FunctionComponent<IProps> = ({
   const [selected, setSelected] = useState<any[]>(controlRef.value);
   const [error, setError] = useState(false);
 
-  const props = useRef<AutocompleteProps<any> & UseAutocompleteProps<any>>(
-    {
-      multiple: controlRef.isMultiple as true,
-      renderInput
-    }
-  ); 
+  const props = useRef<AutocompleteProps<any> & UseAutocompleteProps<any>>();
+  props.current = {
+    multiple: controlRef.isMultiple as true,
+    renderInput
+  };
 
+  
   props.current.value = selected
   props.current.id = controlRef.key;
   props.current.options = controlRef.options;
   props.current.getOptionLabel = (option: IControlSelectOption<any>) => option.label;
-  props.current.renderInput = (params: RenderInputParams) => {
-    return (
-    <TextField
-      {...params}
-      error={error}
-      variant="filled"
-      label={controlRef.label}
-      placeholder={controlRef.placeholder}
-      fullWidth
-    />
-  )};
+
   props.current.onClick = (): void => {
     if (!controlRef.isTouched) {
       controlRef.isTouched = true;
@@ -70,9 +60,7 @@ export const ControlSelect: FunctionComponent<IProps> = ({
   }
 
   props.current.renderTags = (value: any[], getTagProps: GetTagProps) => {
-    // console.log(value)
-    // console.log(getTagProps)
-    return value.map((option, index) => (
+    return value.map((option: IControlSelectOption<any>, index: number) => (
       <Chip
         variant="outlined"
         label={option.label}
@@ -81,18 +69,19 @@ export const ControlSelect: FunctionComponent<IProps> = ({
       />
     ));
   }
-
+  
   function renderInput(params: RenderInputParams) {
-    console.log(params)
+    console.log(error)
     return (
       <TextField
         {...params}
+        error={error}
         variant="filled"
-        label="Size small"
-        placeholder="Favorites"
+        label={controlRef.label}
+        placeholder={controlRef.placeholder}
         fullWidth
       />
-    )
+    );
   }
 
   useEffect(()=> {
