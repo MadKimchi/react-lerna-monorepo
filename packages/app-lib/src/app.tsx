@@ -115,8 +115,6 @@ const App = () => {
       <RxForm formGroupRef={formGroup}>
         {renderControls()}
       </RxForm>
-      {/* <RxButtonSubmit formGroupRef={formGroup} /> */}
-      {/* <RxButtonClear formGroupRef={formGroup} /> */}
     </div>
   );
 };

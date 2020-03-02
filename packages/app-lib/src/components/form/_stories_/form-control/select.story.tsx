@@ -1,9 +1,9 @@
 import React, { FunctionComponent, ReactElement } from 'react';
 
-import { RxSelectControlRef } from "../classes";
-import { ControlTypeEnum } from "../enums";
-import { RxFormControl } from "../form-control";
-import { IControlSelectOption } from '../components';
+import { RxSelectControlRef } from "../../classes";
+import { ControlTypeEnum } from "../../enums";
+import { RxFormControl } from "../../form-control";
+import { IControlSelectOption } from '../../components';
 
 export const Select: FunctionComponent = (): ReactElement => {
     const controlRef = new RxSelectControlRef("selectKey", ControlTypeEnum.select);
