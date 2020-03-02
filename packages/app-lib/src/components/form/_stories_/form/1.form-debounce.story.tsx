@@ -1,41 +1,35 @@
 import React, { ReactElement, useEffect, useState } from 'react';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
-import {
-  RxFormControl
-} from '../../..';
 import { RxFormGroupRef, RxFormControlRef, RxSelectControlRef } from '../../classes';
 import { IRxFormControlRef } from '../../interfaces';
-import { ValidationTriggerEnum, ControlTypeEnum } from '../../enums';
-import { StringValidator } from '../../validators';
+import { ControlTypeEnum } from '../../enums';
 import { IControlSelectOption } from '../../components';
+import { RxFormControl } from '../../form-control';
 import { RxForm } from '../../form';
 
 import { useStyles } from '../_styles_/example.style';
 
-// export default {
-//   title: 'Components/RxForm',
-//   component: RxForm
-// };
+export default {
+  title: 'Components/RxForm',
+  component: RxForm
+};
 
-export const onDebounce5000MS = () => {
+export const DebounceForm = () => {
   const classes = useStyles();
   const [valueJSON, setValueJSON] = useState('');
 
   const formGroup = new RxFormGroupRef();
-  formGroup.validationTrigger = ValidationTriggerEnum.onSync;
-  formGroup.debounceTimer = 5000;
+  formGroup.debounceTimer = 2000;
 
   const form = buildForm(formGroup);
 
   function buildForm(formGroup: RxFormGroupRef): IRxFormControlRef[] {
     buildInputControl('1', formGroup);
     buildInputControl('2', formGroup);
-    buildInputControl('3', formGroup);
-    buildSelectControl('4', formGroup);
-    buildSelectControl('5', formGroup);
-    buildSelectControl('6', formGroup);
-  
+    buildSelectControl('3', formGroup);
+    buildSelectControl('4', formGroup, false);
+    
     return Object.values(formGroup.controls).map(
       (control: IRxFormControlRef) => control
     );
@@ -44,16 +38,14 @@ export const onDebounce5000MS = () => {
   function buildInputControl(key: string, formGroupRef: RxFormGroupRef): void {
     const inputControl = new RxFormControlRef(key, ControlTypeEnum.input);
     inputControl.label = `some label ${key}`;
-    inputControl.validators = [StringValidator(3)];
   
     formGroupRef.addControl(inputControl);
   }
   
-  function buildSelectControl(key: string, formGroupRef: RxFormGroupRef): void {
+  function buildSelectControl(key: string, formGroupRef: RxFormGroupRef, isMultiple: boolean = true): void {
     const selectControl = new RxSelectControlRef(key, ControlTypeEnum.select);
     selectControl.label = `some label ${key}`;
-    selectControl.validators = [selectValidator(3)];
-    selectControl.isMultiple = true;
+    selectControl.isMultiple = isMultiple;
     selectControl.options = getOptions();
   
     formGroupRef.addControl(selectControl);
@@ -96,7 +88,9 @@ export const onDebounce5000MS = () => {
 
   return (
     <div className={classes.column}>
-      <RxForm formGroupRef={formGroup}>
+      <RxForm
+        formGroupRef={formGroup}
+        showDefaultActions={false}>
         { renderControls() }
       </RxForm>
   <pre>{ valueJSON }</pre>
@@ -125,17 +119,8 @@ function getOptions(): IControlSelectOption<string>[] {
   }));
 }
 
-function selectValidator(minLength: number): Function {
-  return (value: any[]): { key: string; msg: string } | null => {
-    const hasError = (!!value && value.length < minLength) || !value;
-    return hasError
-      ? { key: 'minLength', msg: `At least ${minLength} characters` }
-      : null;
-  };
-}
-
-onDebounce5000MS.story = {
+DebounceForm.story = {
   title: 'Components/RxForm',
   component: RxForm,
-  name: 'Debounce in 5000ms'
+  name: 'Debounce in 2000ms'
 }
