@@ -13,12 +13,14 @@ import { RxFormGroupRef } from '../../classes';
 interface IRxButtonSubmitProps {
   formGroupRef: RxFormGroupRef;
   submitLabel?: string;
+  onSubmit?: (payload: { [key: string]: any }) => void; // TODO: evalue if this is still needed
 }
 
 export const RxButtonSubmit: FunctionComponent<IRxButtonSubmitProps> = ({
   formGroupRef,
   // TODO: this should be handled by language service
-  submitLabel = 'Submit'
+  submitLabel = 'Submit',
+  onSubmit
 }): ReactElement => {
   const initialValidty =
     formGroupRef.validationTrigger !== ValidationTriggerEnum.onAsync;
@@ -54,6 +56,9 @@ export const RxButtonSubmit: FunctionComponent<IRxButtonSubmitProps> = ({
 
   function onClick(): void {
     formGroupRef.onSubmit.next();
+    if (onSubmit) {
+      onSubmit(formGroupRef.values)
+    }
   }
 
   return (
