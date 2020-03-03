@@ -13,8 +13,8 @@ interface IRxFormProps {
 export const RxForm: FunctionComponent<IRxFormProps> = ({
     formGroupRef,
     showDefaultActions = true,
-    submitLabel,
-    clearLabel,
+    submitLabel = 'Submit',
+    clearLabel = 'Clear',
     children
 }): ReactElement => {
     const classes = useStyles()
