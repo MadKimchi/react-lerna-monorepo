@@ -1,1 +1,1 @@
-export const RxInlineValidation = () => {};
+export const LibInlineValidation = () => {};

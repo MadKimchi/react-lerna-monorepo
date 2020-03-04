@@ -7,25 +7,15 @@ import React, {
 import { debounceTime, takeWhile, takeUntil } from 'rxjs/operators';
 import Button from '@material-ui/core/Button';
 
-import { ValidationTriggerEnum } from '../../../form/enums';
-import { RxFormGroupRef } from '../../classes';
+import { IFormGroupProps } from '../../interfaces/group.interface';
+import { ValidationTriggerEnum } from '../../enums';
 
-interface IRxButtonSubmitProps {
-  formGroupRef: RxFormGroupRef;
-  submitLabel?: string;
-  onSubmit?: (payload: { [key: string]: any }) => void; // TODO: evalue if this is still needed
-}
-
-export const RxButtonSubmit: FunctionComponent<IRxButtonSubmitProps> = ({
-  formGroupRef,
-  // TODO: this should be handled by language service
-  submitLabel = 'Submit',
-  onSubmit
+export const RxButtonSubmit: FunctionComponent<IFormGroupProps> = ({
+  formGroupRef
 }): ReactElement => {
   const initialValidty =
     formGroupRef.validationTrigger !== ValidationTriggerEnum.onAsync;
   const [invalid, setInvalid] = useState(initialValidty);
-
   useEffect(
     () => {
       formGroupRef.onDebounce
@@ -56,9 +46,6 @@ export const RxButtonSubmit: FunctionComponent<IRxButtonSubmitProps> = ({
 
   function onClick(): void {
     formGroupRef.onSubmit.next();
-    if (onSubmit) {
-      onSubmit(formGroupRef.values)
-    }
   }
 
   return (
@@ -69,7 +56,7 @@ export const RxButtonSubmit: FunctionComponent<IRxButtonSubmitProps> = ({
       disabled={invalid}
       onClick={onClick}
     >
-      {submitLabel}
+      Submit
     </Button>
   );
 };

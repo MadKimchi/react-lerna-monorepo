@@ -14,19 +14,18 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 
-import { IFormControlProps } from '../../interfaces';
-import { ValidationTriggerEnum } from '../../enums';
-import { useStyles } from '../control-select/control-select.style';
+import { IFormControlProps } from '../../../interfaces';
+import { ValidationTriggerEnum } from '../../../enums';
 
 export const ControlInput: FunctionComponent<IFormControlProps> = ({
   controlRef
 }): ReactElement => {
   const [shrink, setShrink] = useState(false);
   const [error, setError] = useState(false);
-  const ref = useRef();
-  const props = useRef<FilledInputProps>({});
   const trigger = controlRef.formGroupRef.validationTrigger;
 
+  const ref = useRef();
+  const props = useRef<FilledInputProps>({});
   props.current.id = controlRef.key;
   props.current.inputRef = ref;
 
@@ -40,7 +39,7 @@ export const ControlInput: FunctionComponent<IFormControlProps> = ({
   props.current.onChange = (event: ChangeEvent<HTMLInputElement>) => {
     controlRef.value = event.target.value;
 
-    // TODO: possibly move this logic to class setter
+    // possibly move this logic to class setter
     if (!controlRef.isDirty) {
       controlRef.isDirty = true;
     }
@@ -94,10 +93,8 @@ export const ControlInput: FunctionComponent<IFormControlProps> = ({
     [controlRef, trigger]
   );
 
-  const classes = useStyles()
-
   return (
-    <FormControl className={classes.formControlRoot} variant="filled" error={error}>
+    <FormControl variant="filled" error={error}>
       <InputLabel htmlFor="field-email" shrink={shrink}>
         {controlRef.label}
       </InputLabel>

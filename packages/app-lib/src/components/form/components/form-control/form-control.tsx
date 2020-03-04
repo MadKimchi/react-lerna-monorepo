@@ -1,8 +1,8 @@
 import React, { FunctionComponent, ReactElement, ComponentType } from 'react';
-
-import { ControlTypeEnum } from './enums';
-import { IFormControlProps } from './interfaces';
-import { ControlInput, ControlSelect } from './components';
+import { ControlInput } from './control-input/control-input';
+import { ControlTypeEnum } from '../../enums';
+import { IFormControlProps } from '../../interfaces';
+import { ControlSelect } from './control-select/control-select';
 
 /**
  * Form Control component built with benefits of RxJS
@@ -13,15 +13,10 @@ export const RxFormControl: FunctionComponent<IFormControlProps> = ({
 
   function createControl(controlType: ControlTypeEnum): ComponentType<any> {
     switch(controlType) {
-        // TODO: add more cases
-        /**
-         * case ControlTypeEnum.datePicker: 
-         * case ControlTypeEnum.editor:
-         * case ControlTypeEnum.checkbox:
-         * case ControlTypeEnum.radio:
-         * ...
-         * etc
-         */
+        // case ControlTypeEnum.datePicker: {
+        //   return ControlDatePicker
+        // }
+      
         case ControlTypeEnum.select: {
             return ControlSelect
         }

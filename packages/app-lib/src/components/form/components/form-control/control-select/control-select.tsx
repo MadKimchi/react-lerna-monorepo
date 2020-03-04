@@ -1,23 +1,21 @@
-import React, { FunctionComponent, useState, useRef, useEffect } from 'react';
+import React, { ReactNode, FunctionComponent, useState, useRef, useEffect } from 'react';
 import { takeUntil } from 'rxjs/operators'
 
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Chip from '@material-ui/core/Chip';
-import { FormControl } from '@material-ui/core';
-import TextField from '@material-ui/core/TextField';
-import { UseAutocompleteProps } from '@material-ui/lab/useAutocomplete';
+
 import Autocomplete, {
   AutocompleteProps,
   RenderInputParams,
   GetTagProps
 } from '@material-ui/lab/Autocomplete';
+import TextField from '@material-ui/core/TextField';
 
 import {
   IControlSelectOption
 } from './control-select.interface';
-import { RxSelectControlRef } from '../../classes';
-import { ValidationTriggerEnum } from '../../enums';
-import { useStyles } from './control-select.style';
+import { UseAutocompleteProps } from '@material-ui/lab/useAutocomplete';
+import { RxSelectControlRef } from '../../../classes';
 
 interface IProps {
   controlRef: RxSelectControlRef
@@ -28,8 +26,6 @@ export const ControlSelect: FunctionComponent<IProps> = ({
 }) => {
   const [selected, setSelected] = useState<any[]>(controlRef.value);
   const [error, setError] = useState(false);
-  const trigger = controlRef.formGroupRef.validationTrigger;
-  const classes = useStyles()
 
   const props = useRef<AutocompleteProps<any> & UseAutocompleteProps<any>>();
   props.current = {
@@ -54,19 +50,7 @@ export const ControlSelect: FunctionComponent<IProps> = ({
   };
   
   props.current.onChange = (event: React.ChangeEvent<{}>, value: any | null): void => {
-
-    // TODO: possibly move this logic to class setter
-    if (!controlRef.isDirty) {
-      controlRef.isDirty = true;
-    }
-
-    if (
-      error !== controlRef.invalid &&
-      trigger !== ValidationTriggerEnum.onBlur
-    ) {
-      setError(controlRef.invalid);
-    }
-
+    console.log('???')
     controlRef.value = value
     setSelected(controlRef.value)
     
@@ -87,9 +71,9 @@ export const ControlSelect: FunctionComponent<IProps> = ({
   }
   
   function renderInput(params: RenderInputParams) {
+    console.log(error)
     return (
       <TextField
-        className={classes.normalizeMargin}
         {...params}
         error={error}
         variant="filled"
@@ -112,15 +96,13 @@ export const ControlSelect: FunctionComponent<IProps> = ({
 
   return (
     <div>
-      <FormControl className={classes.formControlRoot} variant="filled" error={error}>
-        <Autocomplete className={classes.normalizeMargin} {...props.current} />
-        {error &&
-          controlRef.errors.map((error: string, index: number) => (
-            <FormHelperText id="my-helper-text" key={index}>
-              {error}
-            </FormHelperText>
-          ))}
-      </FormControl>
+      <Autocomplete {...props.current} />
+      {controlRef.hasError &&
+        controlRef.errors.map((error: string, index: number) => (
+          <FormHelperText id="my-helper-text" key={index}>
+            {error}
+          </FormHelperText>
+        ))}
     </div>
   );
 };
