@@ -1,7 +1,8 @@
 import { Subject } from 'rxjs';
 
-import { ValidationTriggerEnum } from '../enums';
+import { ValidationTriggerEnum, ControlTypeEnum } from '../enums';
 import { IRxFormControlRef } from '../interfaces';
+import { IControlSelectOption } from '../components';
 
 export class RxFormGroupRef {
   public controls: { [key: string]: IRxFormControlRef } = {};
@@ -24,7 +25,6 @@ export class RxFormGroupRef {
   public get values(): { [key: string]: any } {
     return Object.values(this.controls).reduce(
       (values: { [key: string]: any }, control: IRxFormControlRef) => {
-        console.log(control.value)
         values[control.key] = control.value;
         return values;
       },

@@ -73,8 +73,7 @@ export const RxButtonSubmit: FunctionComponent<IRxButtonSubmitProps> = ({
       variant="contained"
       color="primary"
       disabled={invalid}
-      onClick={onClick}
-    >
+      onClick={onClick}>
       {submitLabel}
     </Button>
   );

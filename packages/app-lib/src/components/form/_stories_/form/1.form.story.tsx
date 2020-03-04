@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { takeUntil } from 'rxjs/operators';
 
 import { RxFormGroupRef, RxFormControlRef, RxSelectControlRef } from '../../classes';
 import { ControlTypeEnum } from '../../enums';
@@ -6,6 +7,7 @@ import { RxForm } from '../../form';
 import { IControlSelectOption } from '../../components';
 import { RxFormControl } from '../../form-control';
 import { useStyles } from '../_styles_/example.style';
+import { IRxFormControlRef } from '../../interfaces';
 
 export default {
   title: 'Components/RxForm',
@@ -19,42 +21,63 @@ export const DefaultForm = () => {
   const inputControl = new RxFormControlRef('inputControlKey', ControlTypeEnum.input);
   inputControl.label = 'Input Label';
 
+  const control = useRef(inputControl);
+
   const singleSelectControl = new RxSelectControlRef('singleSelectControlKey', ControlTypeEnum.select);
   singleSelectControl.label = 'Single Select Label';
   singleSelectControl.options = getOptions();
+
+  const control2 = useRef(singleSelectControl);
 
   const multiSelectControl = new RxSelectControlRef('multiSelectControlKey', ControlTypeEnum.select);
   multiSelectControl.label = 'Multi Select Label';
   multiSelectControl.isMultiple = true;
   multiSelectControl.options = getOptions();
 
+  const control3 = useRef(multiSelectControl);
+
   const formGroupRef = new RxFormGroupRef();
-  formGroupRef.addControl(inputControl);
-  formGroupRef.addControl(singleSelectControl);
-  formGroupRef.addControl(multiSelectControl);
+  const formRef = useRef(formGroupRef);
 
-  function onSubmit(payload: { [key: string]: any }): void {
-    setJSONValue(JSON.stringify(payload, undefined, 4))
-  }
+  formRef.current.addControl(control.current);
+  formRef.current.addControl(control2.current);
+  formRef.current.addControl(control3.current);
 
-  function onClear(): void {
-    setJSONValue('')
-  }
-  
+  useEffect(
+    () => {
+      formRef.current.onSubmit
+        .pipe(takeUntil(formRef.current.unsubscribe))
+        .subscribe(() => {
+          const stringified = JSON.stringify(formRef.current.values, undefined, 4);
+          setJSONValue(stringified);
+          console.log(formRef.current.values);
+        });
+
+        formRef.current.onClear
+        .pipe(takeUntil(formRef.current.unsubscribe))
+        .subscribe(() => {
+          console.log(formRef.current.values);
+        });
+
+      return () => {
+        formRef.current.unsubscribe.next();
+        formRef.current.unsubscribe.complete();
+      };
+    },
+    [formRef.current]
+  )
+
   return (
     <div className={classes.column}>
-      <RxForm
-        formGroupRef={formGroupRef}
-        onSubmit={onSubmit}
-        onClear={onClear}>
+      <RxForm formGroupRef={formRef.current}>
         <div className={classes.control}>
-          <RxFormControl controlRef={inputControl} />
+          <RxFormControl controlRef={control.current} />
         </div>
         <div className={classes.control}>
-          <RxFormControl controlRef={singleSelectControl} />  
+          <RxFormControl controlRef={control2.current} />  
         </div>
         <div className={classes.control}>
-          <RxFormControl controlRef={multiSelectControl} />
+          <RxFormControl controlRef={control3.current} />
         </div>
       </RxForm>
       <pre>{JSONValue}</pre>
