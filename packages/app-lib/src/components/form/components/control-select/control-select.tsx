@@ -1,5 +1,11 @@
-import React, { FunctionComponent, useState, useRef, useEffect } from 'react';
-import { takeUntil } from 'rxjs/operators'
+import React, {
+  FunctionComponent,
+  useState,
+  useRef,
+  useEffect
+} from 'react';
+
+import { takeUntil, takeWhile } from 'rxjs/operators'
 
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Chip from '@material-ui/core/Chip';
@@ -26,7 +32,8 @@ interface IProps {
 export const ControlSelect: FunctionComponent<IProps> = ({
   controlRef
 }) => {
-  const [selected, setSelected] = useState<any[]>(controlRef.value);
+  const initialValue = !controlRef.value?.length && controlRef.isMultiple ? controlRef.value : null; 
+  const [selected, setSelected] = useState<any[]>(initialValue!);
   const [error, setError] = useState(false);
   const trigger = controlRef.formGroupRef.validationTrigger;
   const classes = useStyles()
@@ -38,7 +45,7 @@ export const ControlSelect: FunctionComponent<IProps> = ({
   };
 
   
-  props.current.value = selected
+  props.current.value = selected!
   props.current.id = controlRef.key;
   props.current.options = controlRef.options;
   props.current.getOptionLabel = (option: IControlSelectOption<any>) => option.label;
@@ -73,6 +80,8 @@ export const ControlSelect: FunctionComponent<IProps> = ({
     if (error !== controlRef.invalid) {
       setError(!controlRef.hasError);
     }
+
+    controlRef.formGroupRef.onDebounce.next();
   }
 
   props.current.renderTags = (value: any[], getTagProps: GetTagProps) => {
@@ -101,6 +110,15 @@ export const ControlSelect: FunctionComponent<IProps> = ({
   }
 
   useEffect(()=> {
+    controlRef.formGroupRef.onSubmit
+        .pipe(
+          takeWhile(() => trigger === ValidationTriggerEnum.onAsync),
+          takeUntil(controlRef.unsubscribe)
+        )
+        .subscribe(() => {
+          setError(controlRef.invalid);
+        });
+
     controlRef.formGroupRef.onClear
       .pipe(takeUntil(controlRef.unsubscribe))
       .subscribe(() => {
@@ -108,7 +126,12 @@ export const ControlSelect: FunctionComponent<IProps> = ({
         setSelected(controlRef.value)
         setError(false);
       })
-  }, [controlRef])
+    
+    return () => {
+      controlRef.unsubscribe.next();
+      controlRef.unsubscribe.complete();
+    };
+  }, [controlRef, trigger])
 
   return (
     <div>

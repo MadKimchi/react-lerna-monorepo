@@ -25,10 +25,10 @@ export const DebounceForm = () => {
   const form = buildForm(formGroup);
 
   function buildForm(formGroup: RxFormGroupRef): IRxFormControlRef[] {
-    buildInputControl('1', formGroup);
-    buildInputControl('2', formGroup);
-    buildSelectControl('3', formGroup);
-    buildSelectControl('4', formGroup, false);
+    buildInputControl('key1', formGroup);
+    buildInputControl('key2', formGroup);
+    buildSelectControl('key3', formGroup);
+    buildSelectControl('key4', formGroup, false);
     
     return Object.values(formGroup.controls).map(
       (control: IRxFormControlRef) => control

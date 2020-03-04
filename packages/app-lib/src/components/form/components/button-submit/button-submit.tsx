@@ -22,9 +22,15 @@ export const RxButtonSubmit: FunctionComponent<IRxButtonSubmitProps> = ({
   submitLabel = 'Submit',
   onSubmit
 }): ReactElement => {
-  const initialValidty =
-    formGroupRef.validationTrigger !== ValidationTriggerEnum.onAsync;
+  const initialValidty = getInitialValidity();
   const [invalid, setInvalid] = useState(initialValidty);
+
+  function getInitialValidity(): boolean {
+    if (formGroupRef.validationTrigger !== ValidationTriggerEnum.onAsync) {
+      return formGroupRef.invalid;
+    }
+    return true;
+  }
 
   useEffect(
     () => {
