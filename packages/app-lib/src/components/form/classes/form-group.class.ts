@@ -25,6 +25,26 @@ export class RxFormGroupRef {
   public get values(): { [key: string]: any } {
     return Object.values(this.controls).reduce(
       (values: { [key: string]: any }, control: IRxFormControlRef) => {
+        // TODO: this is a temporary dirty solution. Move this to setter and getter in select-control.class.ts
+        if (control.type === ControlTypeEnum.select) {
+          console.log(control.value);
+          if (control.value && control.value.length) {
+            values[control.key] = control.value.map(
+              (option: IControlSelectOption<any>) => option.value
+            );
+          } else if (!control.value) {
+            values[control.key] = null;
+          } else {
+            values[control.key] = control.value.value;
+          }
+
+          if (control.value === null) {
+            values[control.key] = null;
+          }
+
+          return values;
+        }
+
         values[control.key] = control.value;
         return values;
       },

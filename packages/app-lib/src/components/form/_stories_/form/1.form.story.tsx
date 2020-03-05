@@ -1,7 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, ReactElement } from 'react';
 import { takeUntil } from 'rxjs/operators';
 
-import { RxFormGroupRef, RxFormControlRef, RxSelectControlRef } from '../../classes';
+import {
+  RxFormGroupRef,
+  RxFormControlRef,
+  RxSelectControlRef
+} from '../../classes';
 import { ControlTypeEnum } from '../../enums';
 import { RxForm } from '../../form';
 import { IControlSelectOption } from '../../components';
@@ -14,71 +18,67 @@ export default {
   component: RxForm
 };
 
+const tracker = new Set<any>();
+
 export const DefaultForm = () => {
   const classes = useStyles();
   const [JSONValue, setJSONValue] = useState('');
+  const formRef = useRef(new RxFormGroupRef());
 
-  const inputControl = new RxFormControlRef('inputControlKey', ControlTypeEnum.input);
-  inputControl.label = 'Input Label';
+  buildInputControl('key1', formRef.current);
+  buildSelectControl('key2', formRef.current);
+  buildSelectControl('key3', formRef.current, true);
 
-  const control = useRef(inputControl);
+  function buildInputControl(key: string, formGroupRef: RxFormGroupRef): void {
+    const inputControl = new RxFormControlRef(key, ControlTypeEnum.input);
+    inputControl.label = `Input Label ${key}`;
 
-  const singleSelectControl = new RxSelectControlRef('singleSelectControlKey', ControlTypeEnum.select);
-  singleSelectControl.label = 'Single Select Label';
-  singleSelectControl.options = getOptions();
+    const ref = useRef(inputControl);
+    tracker.add(ref);
+    formGroupRef.addControl(ref.current);
+  }
 
-  const control2 = useRef(singleSelectControl);
+  function buildSelectControl(
+    key: string,
+    formGroupRef: RxFormGroupRef,
+    isMultiple: boolean = false
+  ): void {
+    const selectControl = new RxSelectControlRef(key, ControlTypeEnum.select);
+    selectControl.label = `Select Label ${key}`;
+    selectControl.isMultiple = isMultiple;
+    selectControl.options = getOptions();
 
-  const multiSelectControl = new RxSelectControlRef('multiSelectControlKey', ControlTypeEnum.select);
-  multiSelectControl.label = 'Multi Select Label';
-  multiSelectControl.isMultiple = true;
-  multiSelectControl.options = getOptions();
+    const ref = useRef(selectControl);
+    tracker.add(ref);
+    formGroupRef.addControl(ref.current);
+  }
 
-  const control3 = useRef(multiSelectControl);
+  function renderControls(): ReactElement[] {
+    const form = Object.values(formRef.current.controls);
+    return form.map((controlRef: IRxFormControlRef) => (
+      <div className={classes.control}>
+        <RxFormControl key={controlRef.key} controlRef={controlRef} />
+      </div>
+    ));
+  }
 
-  const formGroupRef = new RxFormGroupRef();
-  const formRef = useRef(formGroupRef);
-
-  formRef.current.addControl(control.current);
-  formRef.current.addControl(control2.current);
-  formRef.current.addControl(control3.current);
-
-  useEffect(
-    () => {
-      formRef.current.onSubmit
-        .pipe(takeUntil(formRef.current.unsubscribe))
-        .subscribe(() => {
-          const stringified = JSON.stringify(formRef.current.values, undefined, 4);
-          setJSONValue(stringified);
-          console.log(formRef.current.values);
-        });
-
-        formRef.current.onClear
-        .pipe(takeUntil(formRef.current.unsubscribe))
-        .subscribe(() => {
-          console.log(formRef.current.values);
-        });
-
-      return () => {
-        formRef.current.unsubscribe.next();
-        formRef.current.unsubscribe.complete();
-      };
-    },
-    [formRef.current]
-  )
+  function onFormAction(): void {
+    const output = {
+      payload: formRef.current.values,
+      controlReferenceCount: tracker.size
+    };
+    const stringified = JSON.stringify(output, undefined, 4);
+    setJSONValue(stringified);
+  }
 
   return (
     <div className={classes.column}>
-      <RxForm formGroupRef={formRef.current}>
-        <div className={classes.control}>
-          <RxFormControl controlRef={control.current} />
-        </div>
-        <div className={classes.control}>
-          <RxFormControl controlRef={control2.current} />  
-        </div>
-        <div className={classes.control}>
-          <RxFormControl controlRef={control3.current} />
-        </div>
+      <RxForm
+        formGroupRef={formRef.current}
+        onSubmit={onFormAction}
+        onClear={onFormAction}
+      >
+        {renderControls()}
       </RxForm>
       <pre>{JSONValue}</pre>
     </div>
