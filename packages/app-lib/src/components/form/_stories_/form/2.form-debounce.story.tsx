@@ -14,7 +14,7 @@ export default {
   title: 'Components/RxForm',
   component: RxForm
 };
-
+// TODO: Refactor this wiht useRef to fix a bug
 export const DebounceForm = () => {
   const classes = useStyles();
   const [valueJSON, setValueJSON] = useState('');

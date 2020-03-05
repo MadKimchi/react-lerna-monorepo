@@ -18,8 +18,12 @@ export default {
   component: RxForm
 };
 
-const tracker = new Set<any>();
+const tracker = new Set<any>(); // to track the reference object count
 
+/**
+ * This is an ongoing sample work done daily in my spare time
+ * It is not a production work, thus it has a few bugs.
+ */
 export const DefaultForm = () => {
   const classes = useStyles();
   const [JSONValue, setJSONValue] = useState('');
@@ -65,7 +69,7 @@ export const DefaultForm = () => {
   function onFormAction(): void {
     const output = {
       payload: formRef.current.values,
-      controlReferenceCount: tracker.size
+      controlReferenceCount: tracker.size // Tracking the reference count on updating states
     };
     const stringified = JSON.stringify(output, undefined, 4);
     setJSONValue(stringified);
