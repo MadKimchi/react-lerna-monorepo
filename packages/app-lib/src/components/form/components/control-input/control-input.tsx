@@ -14,8 +14,9 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 
-import { IFormControlProps } from '../../../interfaces';
-import { ValidationTriggerEnum } from '../../../enums';
+import { IFormControlProps } from '../../interfaces';
+import { ValidationTriggerEnum } from '../../enums';
+import { useStyles } from '../control-select/control-select.style';
 
 export const ControlInput: FunctionComponent<IFormControlProps> = ({
   controlRef
@@ -23,23 +24,23 @@ export const ControlInput: FunctionComponent<IFormControlProps> = ({
   const [shrink, setShrink] = useState(false);
   const [error, setError] = useState(false);
   const ref = useRef();
+  const props = useRef<FilledInputProps>({});
   const trigger = controlRef.formGroupRef.validationTrigger;
 
-  const props: FilledInputProps = {};
-  props.id = controlRef.key;
-  props.inputRef = ref;
+  props.current.id = controlRef.key;
+  props.current.inputRef = ref;
 
   // callbacks
-  props.onClick = () => {
+  props.current.onClick = () => {
     if (!controlRef.isTouched) {
       controlRef.isTouched = true;
     }
   };
 
-  props.onChange = (event: ChangeEvent<HTMLInputElement>) => {
+  props.current.onChange = (event: ChangeEvent<HTMLInputElement>) => {
     controlRef.value = event.target.value;
 
-    // possibly move this logic to class setter
+    // TODO: possibly move this logic to class setter
     if (!controlRef.isDirty) {
       controlRef.isDirty = true;
     }
@@ -54,11 +55,11 @@ export const ControlInput: FunctionComponent<IFormControlProps> = ({
     controlRef.formGroupRef.onDebounce.next();
   };
 
-  props.onFocus = (): void => {
+  props.current.onFocus = (): void => {
     setShrink(true);
   };
 
-  props.onBlur = (): void => {
+  props.current.onBlur = (): void => {
     if (!controlRef.value) {
       setShrink(false);
     }
@@ -93,12 +94,14 @@ export const ControlInput: FunctionComponent<IFormControlProps> = ({
     [controlRef, trigger]
   );
 
+  const classes = useStyles()
+
   return (
-    <FormControl variant="filled" error={error}>
+    <FormControl className={classes.formControlRoot} variant="filled" error={error}>
       <InputLabel htmlFor="field-email" shrink={shrink}>
         {controlRef.label}
       </InputLabel>
-      <FilledInput {...props} />
+      <FilledInput {...props.current} />
       {error &&
         controlRef.errors.map((error: string, index: number) => (
           <FormHelperText id="my-helper-text" key={index}>

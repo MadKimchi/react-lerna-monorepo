@@ -1,8 +1,10 @@
 import { ControlTypeEnum } from '../enums/control-type.enum';
 import { Subject } from 'rxjs';
 import { RxFormGroupRef } from './form-group.class';
+import { IRxFormControlRef } from '../interfaces';
 
-export class RxFormControlRef {
+// TODO: change it to input control ref or base control ref or regular control ref
+export class RxFormControlRef implements IRxFormControlRef {
   public hasError: boolean = false;
   public isDirty: boolean = false;
   public isTouched: boolean = false;
@@ -10,10 +12,11 @@ export class RxFormControlRef {
   public label: string = '';
   public value: string = '';
   public validators: Function[] = [];
-  public _errors: Map<string, string> = new Map();
   public formGroupRef!: RxFormGroupRef; // prettier-ignore
 
   public unsubscribe: Subject<void> = new Subject<void>();
+
+  private _errors: Map<string, string> = new Map();
 
   constructor(public key: string, public type: ControlTypeEnum) {
     this.setError = this.setError.bind(this);
