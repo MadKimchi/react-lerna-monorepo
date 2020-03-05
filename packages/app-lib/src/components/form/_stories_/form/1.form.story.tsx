@@ -29,13 +29,22 @@ export const DefaultForm = () => {
   buildSelectControl('key2', formRef.current);
   buildSelectControl('key3', formRef.current, true);
 
+  function renderControls(): ReactElement[] {
+    const controls = Object.values(formRef.current.controls);
+    return controls.map((controlRef: IRxFormControlRef) => (
+      <div className={classes.control}>
+        <RxFormControl key={controlRef.key} controlRef={controlRef} />
+      </div>
+    ));
+  }
+
   function buildInputControl(key: string, formGroupRef: RxFormGroupRef): void {
     const inputControl = new RxFormControlRef(key, ControlTypeEnum.input);
     inputControl.label = `Input Label ${key}`;
 
-    const ref = useRef(inputControl);
-    tracker.add(ref);
-    formGroupRef.addControl(ref.current);
+    const inputRef = useRef(inputControl);
+    tracker.add(inputRef);
+    formGroupRef.addControl(inputRef.current);
   }
 
   function buildSelectControl(
@@ -48,18 +57,9 @@ export const DefaultForm = () => {
     selectControl.isMultiple = isMultiple;
     selectControl.options = getOptions();
 
-    const ref = useRef(selectControl);
-    tracker.add(ref);
-    formGroupRef.addControl(ref.current);
-  }
-
-  function renderControls(): ReactElement[] {
-    const form = Object.values(formRef.current.controls);
-    return form.map((controlRef: IRxFormControlRef) => (
-      <div className={classes.control}>
-        <RxFormControl key={controlRef.key} controlRef={controlRef} />
-      </div>
-    ));
+    const selectRef = useRef(selectControl);
+    tracker.add(selectRef);
+    formGroupRef.addControl(selectRef.current);
   }
 
   function onFormAction(): void {
