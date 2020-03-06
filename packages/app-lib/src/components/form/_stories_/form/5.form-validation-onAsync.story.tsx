@@ -16,7 +16,7 @@ export default {
   component: RxForm
 };
 
-// TODO: Refactor this wiht useRef to fix a bug
+// TODO: Refactor this wiht useInput, useSelect, useForm to fix the existing bugs
 export const AsyncValidationForm = () => {
   const classes = useStyles();
   const [valueJSON, setValueJSON] = useState('');

@@ -4,60 +4,37 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
 import { RxFormGroupRef, RxFormControlRef, RxSelectControlRef } from '../../classes';
 import { IRxFormControlRef } from '../../interfaces';
 import { ControlTypeEnum } from '../../enums';
-import { IControlSelectOption } from '../../components';
+import { IControlSelectOption, RxButtonClear } from '../../components';
 import { RxFormControl } from '../../form-control';
 import { RxForm } from '../../form';
 
 import { useStyles } from '../_styles_/example.style';
+import { getSelectOptions, buildFormOutput } from '../_utils_/story.util';
+import { useFormGroup, useInput, useSelect } from '../../hooks';
 
 export default {
   title: 'Components/RxForm',
   component: RxForm
 };
-// TODO: Refactor this wiht useRef to fix a bug
+
 export const DebounceForm = () => {
   const classes = useStyles();
-  const [valueJSON, setValueJSON] = useState('');
+  const [JSONValue, setJSONValue] = useState('');
+  const nameList = getSelectOptions();
 
-  const formGroup = new RxFormGroupRef();
+  const formGroup = useFormGroup();
   formGroup.debounceTimer = 2000;
 
-  const form = buildForm(formGroup);
+  const controlKey1 = useInput('key1');
+  // give more meaningful name if used in prod
+  const controlKey2 = useSelect('key2', nameList);
+  const controlKey3 = useSelect('key3', nameList);
+  const controlKey4 = useSelect('key4', nameList, true);
 
-  function buildForm(formGroup: RxFormGroupRef): IRxFormControlRef[] {
-    buildInputControl('key1', formGroup);
-    buildInputControl('key2', formGroup);
-    buildSelectControl('key3', formGroup);
-    buildSelectControl('key4', formGroup, false);
-    
-    return Object.values(formGroup.controls).map(
-      (control: IRxFormControlRef) => control
-    );
-  }
-  
-  function buildInputControl(key: string, formGroupRef: RxFormGroupRef): void {
-    const inputControl = new RxFormControlRef(key, ControlTypeEnum.input);
-    inputControl.label = `some label ${key}`;
-  
-    formGroupRef.addControl(inputControl);
-  }
-  
-  function buildSelectControl(key: string, formGroupRef: RxFormGroupRef, isMultiple: boolean = true): void {
-    const selectControl = new RxSelectControlRef(key, ControlTypeEnum.select);
-    selectControl.label = `some label ${key}`;
-    selectControl.isMultiple = isMultiple;
-    selectControl.options = getOptions();
-  
-    formGroupRef.addControl(selectControl);
-  }
-  
-  function renderControls(): ReactElement[] {
-    return form.map((controlRef: IRxFormControlRef) => (
-      <div className={classes.control} key={controlRef.key}>
-        <RxFormControl controlRef={controlRef} />
-      </div>
-    ));
-  }
+  formGroup.addControl(controlKey1);
+  formGroup.addControl(controlKey2);
+  formGroup.addControl(controlKey3);
+  formGroup.addControl(controlKey4);
 
   useEffect(
     () => {
@@ -67,15 +44,19 @@ export const DebounceForm = () => {
           debounceTime(formGroup.debounceTimer)
         )
         .subscribe(() => {
-          // do your request inside the pipe and chain into the subscription
-          const stringified = JSON.stringify(formGroup.values, undefined, 4);
-          setValueJSON(stringified);
+          // You can do a data request here or inside pipe block to be chained
+
+          const output = buildFormOutput(formGroup);
+          const stringified = JSON.stringify(output, undefined, 4);
+          setJSONValue(stringified);
         });
 
       formGroup.onClear
         .pipe(takeUntil(formGroup.unsubscribe))
         .subscribe(() => {
-          setValueJSON('');
+          const output = buildFormOutput(formGroup);
+          const stringified = JSON.stringify(output, undefined, 4);
+          setJSONValue(stringified);
         });
 
       return () => {
@@ -91,33 +72,26 @@ export const DebounceForm = () => {
       <RxForm
         formGroupRef={formGroup}
         showDefaultActions={false}>
-        { renderControls() }
+        <div className={classes.control}>
+          <RxFormControl controlRef={controlKey1} />
+        </div>
+        <div className={classes.control}>
+          <RxFormControl controlRef={controlKey2} />
+        </div>
+        <div className={classes.control}>
+          <RxFormControl controlRef={controlKey3} />
+        </div>
+        <div className={classes.control}>
+          <RxFormControl controlRef={controlKey4} />
+        </div>
+        <div className={classes.buttonWrapper}>
+          <RxButtonClear formGroupRef={formGroup} />
+        </div>
       </RxForm>
-  <pre>{ valueJSON }</pre>
+      <pre>{ JSONValue }</pre>
     </div>
   );
 };
-
-function getOptions(): IControlSelectOption<string>[] {
-  const options = [
-    'Oliver Hansen',
-    'Van Henry',
-    'April Tucker',
-    'Ralph Hubbard',
-    'Omar Alexander',
-    'Carlos Abbott',
-    'Miriam Wagner',
-    'Bradley Wilkerson',
-    'Virginia Andrews',
-    'Kelly Snyder'
-  ];
-
-  return options.map((name: string, index: number) => ({
-    id: `${index}`,
-    label: name,
-    value: name
-  }));
-}
 
 DebounceForm.story = {
   title: 'Components/RxForm',

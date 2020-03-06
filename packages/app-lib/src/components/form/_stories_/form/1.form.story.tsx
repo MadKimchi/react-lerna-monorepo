@@ -13,8 +13,6 @@ export default {
   component: RxForm
 };
 
-const tracker = new Set<any>(); // to track the reference object count
-
 /**
  * This is an ongoing sample work done daily in my spare time
  * It is not a production work, thus it has a few bugs.
@@ -25,7 +23,8 @@ export const DefaultForm = () => {
   const nameList = getSelectOptions();
 
   const formGroup = useFormGroup();
-  const controlKey1 = useInput('key1'); // TODO: give more meaningful name if used in prod
+  // give more meaningful name if used in prod
+  const controlKey1 = useInput('key1');
   const controlKey2 = useSelect('key2', nameList);
   const controlKey3 = useSelect('key3', nameList, true);
 

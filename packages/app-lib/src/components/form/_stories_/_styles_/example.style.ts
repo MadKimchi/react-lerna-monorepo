@@ -10,6 +10,7 @@ export const useStyles = makeStyles({
     flexDirection: 'row'
   },
   buttonWrapper: {
+    display: 'flex',
     justifyContent: 'flex-end'
   },
   button: {
