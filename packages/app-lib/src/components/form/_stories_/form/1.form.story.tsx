@@ -2,10 +2,11 @@ import React, { useState} from 'react';
 
 import { RxForm } from '../../form';
 import { RxFormControl } from '../../form-control';
+import { useFormGroup, useInput, useSelect } from '../../hooks';
+
+// story related untils
 import { useStyles } from '../_styles_/example.style';
-import { useInput, useSelect } from '../../hooks';
-import { useFormGroup } from '../../hooks/useForm';
-import { getSelectOptions, buildFormOutput } from '../_utills_/story.utill';
+import { getSelectOptions, buildFormOutput } from '../_utils_/story.util';
 
 export default {
   title: 'Components/RxForm',
