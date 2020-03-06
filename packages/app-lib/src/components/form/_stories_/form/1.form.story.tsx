@@ -1,17 +1,11 @@
-import React, { useState, useEffect, useRef, ReactElement } from 'react';
-import { takeUntil } from 'rxjs/operators';
+import React, { useState} from 'react';
 
-import {
-  RxFormGroupRef,
-  RxFormControlRef,
-  RxSelectControlRef
-} from '../../classes';
-import { ControlTypeEnum } from '../../enums';
 import { RxForm } from '../../form';
-import { IControlSelectOption } from '../../components';
 import { RxFormControl } from '../../form-control';
 import { useStyles } from '../_styles_/example.style';
-import { IRxFormControlRef } from '../../interfaces';
+import { useInput, useSelect } from '../../hooks';
+import { useFormGroup } from '../../hooks/useForm';
+import { getSelectOptions, buildFormOutput } from '../_utills_/story.utill';
 
 export default {
   title: 'Components/RxForm',
@@ -27,50 +21,19 @@ const tracker = new Set<any>(); // to track the reference object count
 export const DefaultForm = () => {
   const classes = useStyles();
   const [JSONValue, setJSONValue] = useState('');
-  const formRef = useRef(new RxFormGroupRef());
+  const nameList = getSelectOptions();
 
-  buildInputControl('key1', formRef.current);
-  buildSelectControl('key2', formRef.current);
-  buildSelectControl('key3', formRef.current, true);
+  const formGroup = useFormGroup();
+  const controlKey1 = useInput('key1'); // TODO: give more meaningful name if used in prod
+  const controlKey2 = useSelect('key2', nameList);
+  const controlKey3 = useSelect('key3', nameList, true);
 
-  function renderControls(): ReactElement[] {
-    const controls = Object.values(formRef.current.controls);
-    return controls.map((controlRef: IRxFormControlRef) => (
-      <div className={classes.control}>
-        <RxFormControl key={controlRef.key} controlRef={controlRef} />
-      </div>
-    ));
-  }
-
-  function buildInputControl(key: string, formGroupRef: RxFormGroupRef): void {
-    const inputControl = new RxFormControlRef(key, ControlTypeEnum.input);
-    inputControl.label = `Input Label ${key}`;
-
-    const inputRef = useRef(inputControl);
-    tracker.add(inputRef);
-    formGroupRef.addControl(inputRef.current);
-  }
-
-  function buildSelectControl(
-    key: string,
-    formGroupRef: RxFormGroupRef,
-    isMultiple: boolean = false
-  ): void {
-    const selectControl = new RxSelectControlRef(key, ControlTypeEnum.select);
-    selectControl.label = `Select Label ${key}`;
-    selectControl.isMultiple = isMultiple;
-    selectControl.options = getOptions();
-
-    const selectRef = useRef(selectControl);
-    tracker.add(selectRef);
-    formGroupRef.addControl(selectRef.current);
-  }
+  formGroup.addControl(controlKey1);
+  formGroup.addControl(controlKey2);
+  formGroup.addControl(controlKey3);
 
   function onFormAction(): void {
-    const output = {
-      payload: formRef.current.values,
-      controlReferenceCount: tracker.size // Tracking the reference count on updating states
-    };
+    const output = buildFormOutput(formGroup);
     const stringified = JSON.stringify(output, undefined, 4);
     setJSONValue(stringified);
   }
@@ -78,37 +41,24 @@ export const DefaultForm = () => {
   return (
     <div className={classes.column}>
       <RxForm
-        formGroupRef={formRef.current}
+        formGroupRef={formGroup}
         onSubmit={onFormAction}
         onClear={onFormAction}
       >
-        {renderControls()}
+        <div className={classes.control}>
+          <RxFormControl controlRef={controlKey1} />
+        </div>
+        <div className={classes.control}>
+          <RxFormControl controlRef={controlKey2} />
+        </div>
+        <div className={classes.control}>
+          <RxFormControl controlRef={controlKey3} />
+        </div>
       </RxForm>
       <pre>{JSONValue}</pre>
     </div>
   );
 };
-
-function getOptions(): IControlSelectOption<string>[] {
-  const options = [
-    'Oliver Hansen',
-    'Van Henry',
-    'April Tucker',
-    'Ralph Hubbard',
-    'Omar Alexander',
-    'Carlos Abbott',
-    'Miriam Wagner',
-    'Bradley Wilkerson',
-    'Virginia Andrews',
-    'Kelly Snyder'
-  ];
-
-  return options.map((name: string, index: number) => ({
-    id: `${index}`,
-    label: name,
-    value: name
-  }));
-}
 
 DefaultForm.story = {
   title: 'Components/RxForm',

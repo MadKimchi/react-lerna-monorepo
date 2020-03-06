@@ -50,7 +50,7 @@ export const ControlSelect: FunctionComponent<IProps> = ({
   props.current.options = controlRef.options;
   props.current.getOptionLabel = (option: IControlSelectOption<any>) => option.label;
 
-  props.current.onClick = (): void => {
+  props.current.onOpen = (): void => {
     if (!controlRef.isTouched) {
       controlRef.isTouched = true;
     }
