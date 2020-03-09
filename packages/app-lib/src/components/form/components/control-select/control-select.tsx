@@ -67,19 +67,20 @@ export const ControlSelect: FunctionComponent<IProps> = ({
       controlRef.isDirty = true;
     }
 
+    controlRef.value = value
+    setSelected(controlRef.value)
+    
+
     if (
       error !== controlRef.invalid &&
       trigger !== ValidationTriggerEnum.onBlur
     ) {
       setError(controlRef.invalid);
     }
-
-    controlRef.value = value
-    setSelected(controlRef.value)
     
-    if (error !== controlRef.invalid) {
-      setError(!controlRef.hasError);
-    }
+    // if (error !== controlRef.invalid) {
+    //   setError(!controlRef.hasError);
+    // }
 
     controlRef.formGroupRef.onDebounce.next();
   }
