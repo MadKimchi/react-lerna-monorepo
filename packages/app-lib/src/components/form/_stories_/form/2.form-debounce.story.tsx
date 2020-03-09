@@ -23,7 +23,6 @@ export const DebounceForm = () => {
   formGroup.debounceTimer = 2000;
 
   const controlKey1 = useInput('key1');
-  // give more meaningful name if used in prod
   const controlKey2 = useSelect('key2', nameList);
   const controlKey3 = useSelect('key3', nameList);
   const controlKey4 = useSelect('key4', nameList, true);
@@ -42,7 +41,6 @@ export const DebounceForm = () => {
         )
         .subscribe(() => {
           // You can do a data request here or inside pipe block to be chained
-
           const output = buildFormOutput(formGroup);
           const stringified = JSON.stringify(output, undefined, 4);
           setJSONValue(stringified);
