@@ -29,7 +29,7 @@ export const RxButtonSubmit: FunctionComponent<IRxButtonSubmitProps> = ({
     if (formGroupRef.validationTrigger !== ValidationTriggerEnum.onAsync) {
       return formGroupRef.invalid;
     }
-    return true;
+    return false;
   }
 
   useEffect(
@@ -48,7 +48,10 @@ export const RxButtonSubmit: FunctionComponent<IRxButtonSubmitProps> = ({
         });
 
       formGroupRef.onClear
-        .pipe(takeUntil(formGroupRef.unsubscribe))
+        .pipe(
+          takeUntil(formGroupRef.unsubscribe),
+          takeWhile(() => formGroupRef.validationTrigger !== ValidationTriggerEnum.onAsync)
+        )
         .subscribe(() => {
           setInvalid(formGroupRef.invalid);
         });

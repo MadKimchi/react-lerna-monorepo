@@ -1,139 +1,85 @@
-import React, { ReactElement, useEffect, useState } from 'react';
-import { debounceTime, takeUntil } from 'rxjs/operators';
+import React, { useState } from 'react';
 
-import { RxFormGroupRef, RxFormControlRef, RxSelectControlRef } from '../../classes';
-import { IRxFormControlRef } from '../../interfaces';
-import { ControlTypeEnum, ValidationTriggerEnum } from '../../enums';
-import { IControlSelectOption } from '../../components';
+import { ValidationTriggerEnum } from '../../enums';
+import { useFormGroup, useInput, useSelect } from '../../hooks';
+import { StringValidator } from '../../validators';
 import { RxFormControl } from '../../form-control';
 import { RxForm } from '../../form';
 
 import { useStyles } from '../_styles_/example.style';
-import { StringValidator } from '../../validators';
+import { getSelectOptions, buildFormOutput } from '../_utils_/story.util';
 
 export default {
   title: 'Components/RxForm',
   component: RxForm
 };
 
-// TODO: Refactor this wiht useInput, useSelect, useForm to fix the existing bugs
 export const SyncValidationForm = () => {
   const classes = useStyles();
-  const [valueJSON, setValueJSON] = useState('');
+  const [JSONValue, setJSONValue] = useState('');
+  const nameList = getSelectOptions();
 
-  const formGroup = new RxFormGroupRef();
+  const formGroup = useFormGroup();
   formGroup.validationTrigger = ValidationTriggerEnum.onSync;
 
-  const form = buildForm(formGroup);
-
-  function buildForm(formGroup: RxFormGroupRef): IRxFormControlRef[] {
-    buildInputControl('key1', formGroup);
-    buildInputControl('key2', formGroup);
-    buildSelectControl('key3', formGroup);
-    buildSelectControl('key4', formGroup, false);
-    
-    return Object.values(formGroup.controls).map(
-      (control: IRxFormControlRef) => control
-    );
-  }
+  const controlKey1 = useInput('key1');
+  controlKey1.validators = [StringValidator(4)];
   
-  function buildInputControl(key: string, formGroupRef: RxFormGroupRef): void {
-    const inputControl = new RxFormControlRef(key, ControlTypeEnum.input);
-    inputControl.label = `some label ${key}`;
-    inputControl.validators = [StringValidator(3)]
-  
-    formGroupRef.addControl(inputControl);
-  }
-  
-  function buildSelectControl(key: string, formGroupRef: RxFormGroupRef, isMultiple: boolean = true): void {
-    const selectControl = new RxSelectControlRef(key, ControlTypeEnum.select);
-    selectControl.label = `some label ${key}`;
-    selectControl.isMultiple = isMultiple;
-    
-    const minSelection = isMultiple ? 3 : 1;
-    selectControl.validators = [selectValidator(minSelection)];
-    selectControl.options = getOptions();
-  
-    formGroupRef.addControl(selectControl);
-  }
+  const controlKey2 = useSelect('key2', nameList);
+  controlKey2.validators = [selectValidator(1)];
 
-  function selectValidator(minLength: number): Function {
-    return (value: any[]): { key: string; msg: string } | null => {
-      const hasError = (!!value && value.length < minLength) || !value;
-      return hasError
-        ? { key: 'minLength', msg: `At least ${minLength} characters` }
-        : null;
-    };
+  const controlKey3 = useSelect('key3', nameList);
+  controlKey3.validators = [selectValidator(1)];
+
+  const controlKey4 = useSelect('key4', nameList, true);
+  controlKey4.validators = [selectValidator(3)];
+
+  formGroup.addControl(controlKey1);
+  formGroup.addControl(controlKey2);
+  formGroup.addControl(controlKey3);
+  formGroup.addControl(controlKey4);
+
+  function onFormAction(): void {
+    const output = buildFormOutput(formGroup);
+    const stringified = JSON.stringify(output, undefined, 4);
+    setJSONValue(stringified);
   }
-  
-  function renderControls(): ReactElement[] {
-    return form.map((controlRef: IRxFormControlRef) => (
-      <div className={classes.control} key={controlRef.key}>
-        <RxFormControl controlRef={controlRef} />
-      </div>
-    ));
-  }
-
-  useEffect(
-    () => {
-      formGroup.onDebounce
-        .pipe(
-          takeUntil(formGroup.unsubscribe),
-          debounceTime(formGroup.debounceTimer)
-        )
-        .subscribe(() => {
-          // do your request inside the pipe and chain into the subscription
-          const stringified = JSON.stringify(formGroup.values, undefined, 4);
-          setValueJSON(stringified);
-        });
-
-      formGroup.onClear
-        .pipe(takeUntil(formGroup.unsubscribe))
-        .subscribe(() => {
-          setValueJSON('');
-        });
-
-      return () => {
-        formGroup.unsubscribe.next();
-        formGroup.unsubscribe.complete();
-      };
-    },
-    [formGroup]
-  );
 
   return (
     <div className={classes.column}>
-      <RxForm formGroupRef={formGroup}>
-        { renderControls() }
+      <RxForm
+        formGroupRef={formGroup}
+        onSubmit={onFormAction}
+        onClear={onFormAction}>
+        <div className={classes.control}>
+          <RxFormControl controlRef={controlKey1} />
+        </div>
+        <div className={classes.control}>
+          <RxFormControl controlRef={controlKey2} />
+        </div>
+        <div className={classes.control}>
+          <RxFormControl controlRef={controlKey3} />
+        </div>
+        <div className={classes.control}>
+          <RxFormControl controlRef={controlKey4} />
+        </div>
       </RxForm>
-      <pre>{ valueJSON }</pre>
+      <pre>{ JSONValue }</pre>
     </div>
   );
 };
-
-function getOptions(): IControlSelectOption<string>[] {
-  const options = [
-    'Oliver Hansen',
-    'Van Henry',
-    'April Tucker',
-    'Ralph Hubbard',
-    'Omar Alexander',
-    'Carlos Abbott',
-    'Miriam Wagner',
-    'Bradley Wilkerson',
-    'Virginia Andrews',
-    'Kelly Snyder'
-  ];
-
-  return options.map((name: string, index: number) => ({
-    id: `${index}`,
-    label: name,
-    value: name
-  }));
-}
 
 SyncValidationForm.story = {
   title: 'Components/RxForm',
   component: RxForm,
   name: 'Validation on Sync'
+}
+
+function selectValidator(minLength: number): Function {
+  return (value: any[]): { key: string; msg: string } | null => {
+    const hasError = (!!value && value.length < minLength) || !value;
+    return hasError
+      ? { key: 'minLength', msg: `At least ${minLength} item(s) must be selected` }
+      : null;
+  };
 }

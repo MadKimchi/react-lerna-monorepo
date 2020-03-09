@@ -8,7 +8,7 @@ export class RxFormGroupRef {
   public controls: { [key: string]: IRxFormControlRef } = {};
   public validationTrigger: ValidationTriggerEnum = ValidationTriggerEnum.onSync;
 
-  public debounceTimer: number = 1000;
+  public debounceTimer: number = 200;
 
   // TODO: merge this into one subject and check by message type?
   public onDebounce: Subject<void> = new Subject<void>();
