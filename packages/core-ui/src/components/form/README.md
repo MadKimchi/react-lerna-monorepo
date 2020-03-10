@@ -4,7 +4,7 @@
 Forms are stateful (not in terms of React statefulness but the actual form states, such as, isValid, isTouched, isDirty, and etc). It is also inevitable to check the validity of all children components (FormControls) in order to evaluate the validity of the form to be submitted.
 
 ### Problem
-- It is challenging to map states of the parent and its children React compnents in hierarchy, triggered by many factors, such as, input changes or button clicks
+- It is challenging to map the form states to the React component states of the parent and its children React compnents in hierarchy, triggered by many factors, such as, input changes or button clicks
 - State update with dependencies can often cause unnecessary re-rendering and loss of its original/current values of form state.
 
 ### Solution
