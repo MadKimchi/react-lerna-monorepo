@@ -22,9 +22,9 @@ NOTE: This project is an ongoing work done daily in the author's spare time. The
 Each package will have its own pipeline for deployment.
 
 ## How to build and run
-1. Core: 
+1. Core: (will be updated)
 2. Core-UI:
-3. Applications:
-  app-rest - 
-  app-graphql - 
-  app-auth0 - 
+3. Applications: (will be updated)
+  - app-rest - 
+  - app-graphql - 
+  - app-auth0 - 
