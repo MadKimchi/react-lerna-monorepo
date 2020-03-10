@@ -1,4 +1,5 @@
-import {useRef, MutableRefObject} from 'react';
+import { useRef } from 'react';
+
 import { RxSelectControlRef } from '../classes';
 import { ControlTypeEnum } from '../enums';
 import { IControlSelectOption } from '../components';

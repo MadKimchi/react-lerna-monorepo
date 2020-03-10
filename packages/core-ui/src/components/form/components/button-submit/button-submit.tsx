@@ -7,7 +7,7 @@ import React, {
 import { debounceTime, takeWhile, takeUntil } from 'rxjs/operators';
 import Button from '@material-ui/core/Button';
 
-import { ValidationTriggerEnum } from '../../../form/enums';
+import { ValidationTriggerEnum } from '../../enums';
 import { RxFormGroupRef } from '../../classes';
 
 interface IRxButtonSubmitProps {
