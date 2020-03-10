@@ -5,7 +5,7 @@ Forms are stateful (not in terms of React statefulness but the actual form state
 
 ### Problem
 - It is challenging to map states of the parent and its children React compnents in hierarchy, triggered by many factors, such as, input changes or button clicks
-- States updating with dependencies can often cause unnecessary re-rendering and loss of its original/current values of form state.
+- State update with dependencies can often cause unnecessary re-rendering and loss of its original/current values of form state.
 
 ### Solution
 - Form and FormControl components rendered based off Ref object, of which current value is tracked instead of re-instantiated every re-render
