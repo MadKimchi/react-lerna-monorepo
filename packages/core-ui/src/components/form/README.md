@@ -9,7 +9,7 @@ Forms are stateful (not in terms of React statefulness but the actual form state
 
 ### Solution
 - Form and FormControl components rendered based off Ref object, of which current value is tracked instead of re-instantiated every re-render
-- Use of Observer-Observe patterns (RxJS) allows to trigger state update/re-render in a more controlled manner, thus preventing unnecessary re-rendering
+- Use of Observable-Observer patterns (RxJS) allows to trigger state update/re-render in a more controlled manner, thus preventing unnecessary re-rendering
 
 ## Diagram
 ### Component Hierarchy
