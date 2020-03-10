@@ -1,7 +1,7 @@
 ## Introduction
 This repository is a demo UI project in the mono-repository structure using Lerna and Yarn Workspaces to increase code reusability for multiple products with common presentation layers and business logic.
 
-The project structure is inspired by Clean Architecture designed by Microsoft as a suggestion for its .NET application architeture.
+The project structure is inspired by Clean Architecture created by Uncle Bob and others and suggested by Microsoft for its modern .NET application architeture.
 
 NOTE: This project is an ongoing work done daily in the author's spare time. Therefore, it is not a production ready and may contain several bugs. Currently pipelines are not set up and projects are not fully wired up. 
 
