@@ -10,6 +10,12 @@
   "devDependencies": {
     "lerna": "^3.20.2"
   },
+  "scripts": {
+    "story:core-ui": "yarn lerna run story:core-ui",
+    "build:core": "yarn lerna run build:core",
+    "build:core-ui": "yarn lerna run build:core-ui",
+    "deploy:core-ui": "yarn lerna run deploy:core-ui"
+  },
   "workspaces": [
     "packages/*"
   ]
