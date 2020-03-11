@@ -26,6 +26,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build:lib": "tsc",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "story": "start-storybook"
