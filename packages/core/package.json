@@ -2,6 +2,11 @@
   "name": "@madkimchi/core",
   "version": "0.1.0",
   "private": true,
+  "files": [
+    "lib"
+  ],
+  "main": "./lib/index.js",
+  "types": "./lib/types.d.ts",
   "peerDependencies": {
     "@material-ui/core": "^4.9.1",
     "@testing-library/jest-dom": "^4.2.4",
@@ -25,8 +30,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
-    "build:lib": "tsc",
+    "build:core": "tsc",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "story": "start-storybook"
@@ -45,8 +49,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "dependencies": {
-    "@madkimchi/core-ui": "^0.1.0"
   }
 }

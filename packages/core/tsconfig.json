@@ -26,5 +26,5 @@
   "exclude": [
     "lib",
     "node_modules",
-  ]
+   ]
 }

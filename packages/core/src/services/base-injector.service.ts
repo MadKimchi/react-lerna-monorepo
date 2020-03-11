@@ -4,9 +4,8 @@ import { ErrorService } from './error.service';
 import { HttpClient } from '../https/http-client';
 
 export class BaseInjectorService {
-
+  protected _httpClient: HttpClient;
   private _errorService: ErrorService;
-  private _httpClient: HttpClient;
 
   constructor() {
     this._errorService = new ErrorService();
