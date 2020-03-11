@@ -28,35 +28,37 @@ First, you need to run yarn in the root level,
 yarn
 ```
 
-1. Core:
-### Build
+### 1. Core:
+**Build**
+
 In root level
 ```
 yarn lerna build:core
 ```
-2. Core-UI:
-### Build
+### 2. Core-UI:
+**Build**
+
 In root level
 ```
 yarn lerna build:core-ui
 ```
-### Run Storybook
+**Run Storybook**
 ```
 yarn lerna story:core-ui 
 ```
-### Deploy Storybook to gh-pages
+**Deploy Storybook to gh-pages**
 ```
 yarn lerna deploy-storybook:core-ui
 ```
-3. Applications:
+### 3. Applications:
 
-### Run
+**Run**
 In the application directory,
 ```
 yarn start
 ```
 
-### Build
+**Build**
 ```
 yarn build
 ```
