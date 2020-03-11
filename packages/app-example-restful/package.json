@@ -45,6 +45,7 @@
     ]
   },
   "dependencies": {
+    "@madkimchi/core": "^0.1.0",
     "@madkimchi/core-ui": "^0.1.0"
   }
 }
