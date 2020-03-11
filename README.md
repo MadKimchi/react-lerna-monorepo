@@ -29,16 +29,16 @@ yarn
 ```
 
 ### 1. Core:
-**Build**
-
 In root level
+
+**Build**
 ```
 yarn build:core
 ```
 ### 2. Core-UI:
-**Build**
-
 In root level
+
+**Build**
 ```
 yarn build:core-ui
 ```
@@ -51,9 +51,9 @@ yarn story:core-ui
 yarn deploy:core-ui
 ```
 ### 3. Applications:
+In the application directory,
 
 **Run**
-In the application directory,
 ```
 yarn start
 ```
