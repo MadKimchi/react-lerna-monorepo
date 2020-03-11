@@ -33,22 +33,22 @@ yarn
 
 In root level
 ```
-yarn lerna build:core
+yarn build:core
 ```
 ### 2. Core-UI:
 **Build**
 
 In root level
 ```
-yarn lerna build:core-ui
+yarn build:core-ui
 ```
 **Run Storybook**
 ```
-yarn lerna story:core-ui 
+yarn story:core-ui 
 ```
 **Deploy Storybook to gh-pages**
 ```
-yarn lerna deploy-storybook:core-ui
+yarn deploy:core-ui
 ```
 ### 3. Applications:
 
