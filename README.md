@@ -1,7 +1,7 @@
 ## Introduction
 This repository is a demo UI project in the mono-repository structure using Lerna and Yarn Workspaces to increase code reusability for multiple products with common presentation layers and business logic.
 
-The project structure is inspired by Clean Architecture designed by Microsoft as a suggestion for its .NET application architeture.
+The project structure is inspired by Clean Architecture created by Uncle Bob and others and suggested by Microsoft for its modern .NET application architeture.
 
 NOTE: This project is an ongoing work done daily in the author's spare time. Therefore, it is not a production ready and may contain several bugs. Currently pipelines are not set up and projects are not fully wired up. 
 
@@ -10,7 +10,8 @@ NOTE: This project is an ongoing work done daily in the author's spare time. The
 
 ### 1. Core:
 - A package that contains any shared classes, interfaces, enums, and services that are related to business logic and data flow.
-- These cannot be directly modified in the children level of the structure but only extended. This package is intended to increase code reusability for business logic. For instance, AuthService or UserService.
+- These cannot be directly modified in the children level of the structure but only extended. Core -> Applications is readonly, but Applications -> Core should not be allowed.
+- This package is intended to increase code reusability for business logic. Examples can be HttpClients (such as, AuthClient or GraphClient), Contexts, Providers, Models and etc.
 
 ### 2. Core-UI:
 - A package that defines shared components across all product applications, a.k.a UI Design System.
