@@ -23,9 +23,40 @@ NOTE: This project is an ongoing work done daily in the author's spare time. The
 Each package will have its own pipeline for deployment.
 
 ## How to build and run
-1. Core: (will be updated)
+First, you need to run yarn in the root level,
+```
+yarn
+```
+
+1. Core:
+### Build
+In root level
+```
+yarn lerna build:core
+```
 2. Core-UI:
-3. Applications: (will be updated)
-  - app-rest - 
-  - app-graphql - 
-  - app-auth0 - 
+### Build
+In root level
+```
+yarn lerna build:core-ui
+```
+### Run Storybook
+```
+yarn lerna story:core-ui 
+```
+### Deploy Storybook to gh-pages
+```
+yarn lerna deploy-storybook:core-ui
+```
+3. Applications:
+
+### Run
+In the application directory,
+```
+yarn start
+```
+
+### Build
+```
+yarn build
+```

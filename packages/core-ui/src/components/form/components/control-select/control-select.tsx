@@ -41,13 +41,13 @@ export const ControlSelect: FunctionComponent<IProps> = ({
   const props = useRef<AutocompleteProps<any> & UseAutocompleteProps<any>>();
   props.current = {
     multiple: controlRef.isMultiple as true,
-    renderInput
+    renderInput,
+    options: controlRef.options
   };
 
   
   props.current.value = selected!
   props.current.id = controlRef.key;
-  props.current.options = controlRef.options;
   props.current.getOptionLabel = (option: IControlSelectOption<any>) => option.label;
 
   props.current.onOpen = (): void => {
@@ -77,10 +77,6 @@ export const ControlSelect: FunctionComponent<IProps> = ({
     ) {
       setError(controlRef.invalid);
     }
-    
-    // if (error !== controlRef.invalid) {
-    //   setError(!controlRef.hasError);
-    // }
 
     controlRef.formGroupRef.onDebounce.next();
   }
