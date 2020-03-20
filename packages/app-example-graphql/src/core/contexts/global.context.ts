@@ -1,2 +1,5 @@
 import React from 'react';
-export const GlobalContext = React.createContext({});
+import { AppService } from '../services/app.service';
+export const GlobalContext = React.createContext({
+    service: new AppService()
+});
