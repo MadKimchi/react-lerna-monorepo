@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
-
-import { RouterOutlet, routes } from './routes';
+import RouterOutlet from './routes/router-outlet';
+import routes from './routes/routes';
 
 const App = () => {
   return (

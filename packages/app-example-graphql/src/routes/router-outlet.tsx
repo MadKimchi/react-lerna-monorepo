@@ -7,7 +7,7 @@ import { RouteWithSubRoutes } from './route';
 /**
  * Use this component for any new section of routes (any config object that has a "routes" property
  */
-export function RouterOutlet({
+export default function RouterOutlet({
   routes
 }: {
   routes: IRoutePropsWithAuth[];

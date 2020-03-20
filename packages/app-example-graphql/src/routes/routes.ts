@@ -3,7 +3,7 @@ import { RouteEnum } from '../core/enums';
 import { IRoutePropsWithAuth } from './routes.interface';
 import { LoginPage, DashboardPage, NotFoundPage } from '../pages';
 
-export const routes: IRoutePropsWithAuth[] = [
+const routes: IRoutePropsWithAuth[] = [
   {
     path: '/',
     exact: true,
@@ -26,3 +26,5 @@ export const routes: IRoutePropsWithAuth[] = [
     component: NotFoundPage
   }
 ];
+
+export default routes
