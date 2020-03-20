@@ -1,17 +1,25 @@
-import React, { useContext } from 'react';
-import './App.css';
-import { AppProvider } from './core/contexts';
-import { GlobalContext } from './core/contexts/global.context';
+import React from 'react';
+import { useQuery } from 'react-apollo';
+
+import { CURRENCY_QUERY } from './core/https/graph/queries';
 
 const App = () => {
-  const globalContext = useContext(GlobalContext);
-  console.log(globalContext);
+  const { data, error, loading } = useQuery(CURRENCY_QUERY);
+
+  if (error) {
+    return <div>Error</div>;
+  }
+
+  if (loading) {
+    return <div>Loading</div>;
+  }
+
   return (
-    <AppProvider>
-      <div>
-        <h2>My first Apollo app 🚀</h2>
-      </div>
-    </AppProvider>
+    <div>
+      {
+        data.rates.map((rate: any) => <div key={rate.currency}>{rate.rate}</div>)
+      }
+    </div>
   );
 }
 

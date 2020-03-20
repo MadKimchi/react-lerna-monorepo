@@ -5,12 +5,10 @@ import React, {
     FunctionComponent,
     ComponentType,
     FunctionComponentElement,
-    useContext
 } from 'react';
 
 import { ApolloProvider } from 'react-apollo';
-
-import { GlobalContext } from '../contexts/global.context';
+import { GlobalProvider } from './global.provider';
 import { graphClient } from '../https/graph/graph-client';
 
 interface IProvider<T> {
@@ -19,8 +17,6 @@ interface IProvider<T> {
 }
 
 export const AppProvider: FunctionComponent = ({ children }): ReactElement => {
-    const globalContext = useContext(GlobalContext);
-
     const providers: IProvider<any>[] = [
         /**
          * TODO: add a provider like the below
@@ -35,7 +31,7 @@ export const AppProvider: FunctionComponent = ({ children }): ReactElement => {
             value: { client: graphClient }
         },
         {
-            type: GlobalContext.Provider,
+            type: GlobalProvider,
             // value: { value: globalContext }
         }
     ];
