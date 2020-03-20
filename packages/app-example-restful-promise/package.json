@@ -1,5 +1,5 @@
 {
-  "name": "@madkimchi/app-restful",
+  "name": "@madkimchi/app-example-restful-promise",
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
