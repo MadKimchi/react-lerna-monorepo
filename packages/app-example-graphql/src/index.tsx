@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { AppProvider } from './core/contexts';
+import { AppProvider } from './core/contexts/app.provider';
 
 ReactDOM.render(
     <AppProvider>
