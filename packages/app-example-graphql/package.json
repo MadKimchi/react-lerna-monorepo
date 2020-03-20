@@ -2,7 +2,11 @@
   "name": "@madkimchi/app-graphql",
   "version": "0.1.0",
   "private": true,
-  "peerDependencies": {
+  "devDependencies": {
+    "@storybook/react": "^5.3.10",
+    "babel-loader": "^8.0.6",
+    "react-scripts": "^3.4.0",
+    "typescript": "~3.7.2",
     "@material-ui/core": "^4.9.1",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
@@ -10,16 +14,7 @@
     "@types/jest": "^24.0.0",
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.0",
-    "@types/react-dom": "^16.9.5",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
-    "rxjs": "^6.5.4"
-  },
-  "devDependencies": {
-    "@storybook/react": "^5.3.10",
-    "babel-loader": "^8.0.6",
-    "react-scripts": "^3.4.0",
-    "typescript": "~3.7.2"
+    "@types/react-dom": "^16.9.5"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -45,6 +40,12 @@
   },
   "dependencies": {
     "@madkimchi/core": "^0.1.0",
-    "@madkimchi/core-ui": "^0.1.0"
+    "@madkimchi/core-ui": "^0.1.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "rxjs": "^6.5.4",
+    "apollo-boost": "^0.4.7",
+    "graphql": "^14.6.0",
+    "react-apollo": "^3.1.3"
   }
 }
