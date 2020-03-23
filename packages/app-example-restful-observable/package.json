@@ -1,5 +1,5 @@
 {
-  "name": "@madkimchi/app-example-seed",
+  "name": "@madkimchi/app-example-restful-observable",
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
@@ -39,10 +39,11 @@
     ]
   },
   "dependencies": {
+    "@madkimchi/core": "^0.1.0",
+    "@madkimchi/core-ui": "^0.1.0",
+    "axios": "^0.19.2",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
-    "rxjs": "^6.5.4",
-    "@madkimchi/core": "^0.1.0",
-    "@madkimchi/core-ui": "^0.1.0"
+    "rxjs": "^6.5.4"
   }
 }
