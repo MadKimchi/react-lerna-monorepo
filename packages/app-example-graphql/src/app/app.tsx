@@ -1,16 +1,9 @@
-import React, { useEffect, useContext } from 'react';
+import React, { FunctionComponent, ReactElement } from 'react';
 import { BrowserRouter, Link } from 'react-router-dom';
 import RouterOutlet from './routes/router-outlet';
 import routes from './routes/routes';
-import { GlobalContext } from './core/contexts/global.context';
 
-const App = () => {
-  const { service } = useContext(GlobalContext);
-
-  useEffect(() => {
-    console.log('rendered...');
-  }, [service.updateValue]);
-
+const App: FunctionComponent = (): ReactElement => {
   return (
     <div className="appContainer">
       <BrowserRouter>

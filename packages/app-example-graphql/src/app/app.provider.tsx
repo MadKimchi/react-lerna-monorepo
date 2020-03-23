@@ -8,8 +8,8 @@ import React, {
 } from 'react';
 
 import { ApolloProvider } from 'react-apollo';
-import { GlobalProvider } from './global.provider';
-import { graphClient } from '../https/graph/graph-client';
+import { GlobalProvider } from './core/contexts/global.provider';
+import { graphClient } from './core/https/graph/graph-client';
 
 interface IProvider<T> {
     type: ComponentType<T>;

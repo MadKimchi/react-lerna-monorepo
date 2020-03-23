@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
+
 import * as serviceWorker from './serviceWorker';
-import { AppProvider } from './core/contexts/app.provider';
+
+import App from './app/app';
+import { AppProvider } from './app/app.provider';
 
 ReactDOM.render(
     <AppProvider>
