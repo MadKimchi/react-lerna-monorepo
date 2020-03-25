@@ -1,4 +1,4 @@
-import React, { FunctionComponent, ReactElement } from 'react';
+import React, { FunctionComponent, ReactElement, useState, useEffect } from 'react';
 import {
   createStyles,
   makeStyles,
@@ -12,8 +12,12 @@ import {
   Column,
   Table,
   TableCellRenderer,
-  TableHeaderProps
+  TableHeaderProps,
+  InfiniteLoader,
+  Index,
+  IndexRange
 } from 'react-virtualized';
+import { Paper } from '@material-ui/core';
 
 export interface Data {
   calories: number;
@@ -105,7 +109,7 @@ const columnss= [
   }
 ];
 
-interface IDataGridProps {
+export interface IDataGridProps {
   id: string;
   // data: Promise<any>;
   // onRowClicked: () => void;
@@ -118,8 +122,9 @@ interface IDataGridProps {
   headerHeight?: number;
   onRowClick?: () => void;
   rowCount: number;
-  rowGetter: (row: Row) => Data;
+  rowGetter?: (row: Row) => Data;
   rowHeight?: number;
+  getRowsFromServer: (indexRange: IndexRange) => Promise<any>;
 }
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -155,8 +160,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 export const DataGrid: FunctionComponent<IDataGridProps> = ({
   headerHeight = 48,
   rowHeight = 48,
-  rowGetter = ({ index }) => rows[index],
-  rowCount = rows.length,
+  getRowsFromServer,
+  // rowGetter = ({ index }) => rows[index],
+  rowCount = 5,
   columns = columnss,
   onRowClick,
   ...tableProps
@@ -168,55 +174,23 @@ export const DataGrid: FunctionComponent<IDataGridProps> = ({
     const [page, setPage] = React.useState(0);
     const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  
-    // const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof Data) => {
-    //   const isAsc = orderBy === property && order === 'asc';
-    //   setOrder(isAsc ? 'desc' : 'asc');
-    //   setOrderBy(property);
-    // };
-  
-    // const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //   if (event.target.checked) {
-    //     const newSelecteds = rows.map(n => n.name);
-    //     setSelected(newSelecteds);
-    //     return;
-    //   }
-    //   setSelected([]);
-    // };
-  
-    // const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
-    //   const selectedIndex = selected.indexOf(name);
-    //   let newSelected: string[] = [];
-  
-    //   if (selectedIndex === -1) {
-    //     newSelected = newSelected.concat(selected, name);
-    //   } else if (selectedIndex === 0) {
-    //     newSelected = newSelected.concat(selected.slice(1));
-    //   } else if (selectedIndex === selected.length - 1) {
-    //     newSelected = newSelected.concat(selected.slice(0, -1));
-    //   } else if (selectedIndex > 0) {
-    //     newSelected = newSelected.concat(
-    //       selected.slice(0, selectedIndex),
-    //       selected.slice(selectedIndex + 1),
-    //     );
-    //   }
-  
-    //   setSelected(newSelected);
-    // };
-  
-    // const handleChangePage = (event: unknown, newPage: number) => {
-    //   setPage(newPage);
-    // };
-  
-    // const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //   setRowsPerPage(parseInt(event.target.value, 10));
-    //   setPage(0);
-    // };
-    
-    // const isSelected = (name: string) => selected.indexOf(name) !== -1;
-  
+
+    const [data, setData] = useState<any>([]);
+    console.log(data);
+
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
     console.log(emptyRows);
+    const [rowIndex, setRowIndex] = useState(0); 
+
+    useEffect(() => {
+      loadMoreRows({startIndex: 0, stopIndex: 1});
+    }, []);
+
+
+
+    function rowGetter({ index }: Index) {
+      return data[index];
+    }
 
     const cellRenderer: TableCellRenderer = ({ cellData, columnIndex }) => {
 
@@ -260,63 +234,82 @@ export const DataGrid: FunctionComponent<IDataGridProps> = ({
         </TableCell>
       );
     };
+    function setIndex(index: number): void {
+      setRowIndex(index);
+    }
   
-    const getRowClassName = ({ index }: Row) => {
-
+    const getRowClassName = (row: Row) => {
+      const {index} = row
+      console.log(index);
+      console.log(rowCount);
+      console.log(rowGetter(row));
+      setIndex(index);
       return clsx(classes.tableRow, classes.flexContainer, {
         [classes.tableRowHover]: index !== -1 && onRowClick != null
       });
     };
 
+    function isRowLoaded({ index } : Index): boolean {
+      return !!data[index];
+    }
+
+    function loadMoreRows({ startIndex, stopIndex }: IndexRange): Promise<any> {
+        return getRowsFromServer({startIndex, stopIndex})
+            .then((result) => {
+                var tempData = [...data, ...result];
+                setData(tempData);
+            })
+        // return new Promise<T>(() => {});
+    }
+
     return (
-      <div>
+      <Paper style={{height: 100, width: '100%'}}>
         <AutoSizer>
           {({ height, width }) => (
-            <Table
-              height={height}
-              width={width}
-              rowHeight={rowHeight!}
-              gridStyle={{
-                direction: "inherit"
-              }}
-              headerHeight={headerHeight!}
-              className={classes.table}
-              rowGetter={rowGetter}
-              rowCount={rowCount}
-              rowClassName={getRowClassName}>
-              {columns.map(({ dataKey, ...other }, index) => {
-                return (
-                  <Column
-                    key={dataKey}
-                    headerRenderer={(headerProps: any) =>
-                      headerRenderer({
-                        ...headerProps,
-                        columnIndex: index
-                      })
-                    }
-                    className={classes.flexContainer}
-                    cellRenderer={cellRenderer}
-                    dataKey={dataKey}
-                    {...other}
-                  />
-                );
-              })}
+            <InfiniteLoader
+              isRowLoaded={isRowLoaded}
+              loadMoreRows={loadMoreRows}
+              rowCount={rowCount} >
+              {
+                ({ onRowsRendered, registerChild }) => (
+                  <Table
+                    height={height}
+                    width={width}
+                    rowHeight={rowHeight!}
+                    gridStyle={{
+                      direction: "inherit"
+                    }}
+                    ref={registerChild}
+                    headerHeight={headerHeight!}
+                    className={classes.table}
+                    rowGetter={rowGetter}
+                    rowCount={rowCount}
+                    onRowsRendered={onRowsRendered}
+                    rowClassName={getRowClassName}>
+                    {columns.map(({ dataKey, ...other }, index) => {
+                      return (
+                        <Column
+                          key={dataKey}
+                          headerRenderer={(headerProps: any) =>
+                            headerRenderer({
+                              ...headerProps,
+                              columnIndex: index
+                            })
+                          }
+                          className={classes.flexContainer}
+                          cellRenderer={cellRenderer}
+                          dataKey={dataKey}
+                          {...other}
+                        />
+                      );
+                    })}
 
-            </Table>
+                  </Table>
+                )}
+            </InfiniteLoader>
              )}
           </AutoSizer>
-          {/* </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onChangePage={handleChangePage}
-            onChangeRowsPerPage={handleChangeRowsPerPage}
-          />
-        </Paper> */}
-      </div>
+      </Paper>
     );
 };
 
