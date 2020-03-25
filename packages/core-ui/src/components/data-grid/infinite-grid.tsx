@@ -91,13 +91,11 @@ export const InfiniteGrid: FunctionComponent<IInfiniteGridProps> = ({
     }
 
     function loadMoreRows({ startIndex, stopIndex }: IndexRange): Promise<any> {
-        console.log(startIndex, stopIndex);
         return getRowsFromServer({startIndex, stopIndex})
             .then((result) => {
                 var tempData = [...data, ...result];
                 setData(tempData);
             })
-        // return new Promise<T>(() => {});
     }
 
     function getRowClassName({ index }: Index) {
@@ -134,7 +132,7 @@ export const InfiniteGrid: FunctionComponent<IInfiniteGridProps> = ({
     }, []);
 
     return (
-        <Paper style={{height: 288, width: '100%'}}>
+        <Paper style={{height: 240, width: '100%'}}>
             <AutoSizer>
                 {({ height, width }) => (
                     <InfiniteLoader

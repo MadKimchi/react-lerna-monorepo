@@ -211,9 +211,9 @@ export const DefaultInfiniteGrid = () => {
     columns,
     onRowClick: () => {},
     rowClassName: 'fasfaasdfs',
-    height: 500,
+    height: 240,
     rowHeight: 48,
-    rowCount: 4,
+    rowCount: 50,
     getRowsFromServer
    };
 
